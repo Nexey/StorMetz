@@ -8,7 +8,7 @@ const SearchIcon = (props) => (
     <Icon  {...props} name='search-outline' />
 );
 const MapIcon = (props) => (
-    <Icon  {...props} name='map-outline' />
+    <Icon  {...props} name='location-pin' pack="material"/>
 );
 
 const Search = () => {
