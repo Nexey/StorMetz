@@ -1,15 +1,16 @@
+import { StatusBar } from 'expo-status-bar';
+import { default as theme } from './theme.json';
 import React from 'react';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
+import { ApplicationProvider} from '@ui-kitten/components';
 
-const HomeScreen = () => (
-  <Layout style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-    <Text category='h1'>HOME</Text>
-  </Layout>
-);
+import Home from './src/components/Home';
 
-export default () => (
-  <ApplicationProvider {...eva} theme={eva.light}>
-    <HomeScreen />
-  </ApplicationProvider>
-);
+export default function App() {
+  return (
+    <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
+        <Home/>
+        <StatusBar style="auto" />
+    </ApplicationProvider>
+  );
+}
