@@ -1,8 +1,6 @@
 import React from 'react';
 import { Layout, Button, Icon } from '@ui-kitten/components';
 import { StyleSheet, TextInput } from 'react-native';
-import { FeatherIconsPack } from '../helpers/feather-icons'; // <-- Import Feather icons
-import { MaterialIconsPack } from '../helpers/material-icons'; // <-- Import Material icons
 
 const SearchIcon = (props) => (
     <Icon  {...props} name='search-outline' />
@@ -11,7 +9,7 @@ const MapIcon = (props) => (
     <Icon  {...props} name='location-pin' pack="material"/>
 );
 
-const Search = ({ navigation }) => {
+const Search = () => {
     return (
         <Layout style={styles.container}>
             <Layout style={{flex:1}}>

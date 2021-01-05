@@ -1,10 +1,6 @@
 import React from 'react';
-import {Layout, Text, Icon, ApplicationProvider} from '@ui-kitten/components';
-import { StyleSheet, Image, TextInput } from 'react-native';
-
-import Colors from '../definitions/Colors';
-import { FeatherIconsPack } from '../helpers/feather-icons';
-
+import {Layout, Text, Icon} from '@ui-kitten/components';
+import { StyleSheet } from 'react-native';
 
 const ArrowDownward = (props) => (
     <Icon name='arrow-downward' {...props} />
@@ -12,7 +8,8 @@ const ArrowDownward = (props) => (
 const ArrowUpward = (props) => (
     <Icon name='arrow-upward' {...props} />
 );
-const LocationListItem = ({ navigation }) => {
+
+const LocationListItem = () => {
     return (
         <Layout style={styles.container}>
             <Layout style={styles.informationContainer}>

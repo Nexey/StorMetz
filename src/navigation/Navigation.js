@@ -1,67 +1,32 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BottomNavigation, BottomNavigationTab } from '@ui-kitten/components';
+import Search from "../components/Search";
+import LocationListItem from "../components/LocationListItem";
 
-import Search from '../components/Search';
-import LocationListItem from '../components/LocationListItem';
+const { Navigator, Screen } = createBottomTabNavigator();
 
-const SearchNavigation = createStackNavigator();
-const TabNavigation = createBottomTabNavigator();
+const BottomTabBar = ({ navigation, state }) => (
+    <BottomNavigation
+        selectedIndex={state.index}
+        onSelect={index => navigation.navigate(state.routeNames[index])}>
+        <BottomNavigationTab title='Search'/>
+        <BottomNavigationTab title='Item'/>
+    </BottomNavigation>
+);
 
-import Colors from '../definitions/Colors';
+const TabNavigator = () => (
+    <Navigator tabBar={props => <BottomTabBar {...props} />}>
+        <Screen name='Search' component={Search}/>
+        <Screen name='Item' component={LocationListItem}/>
+    </Navigator>
+);
 
-const searchStackScreens = () => {
-    return (
-        <SearchNavigation.Navigator initialRouteName="ViewSearch" >
-            <SearchNavigation.Screen
-                name="ViewSearch"
-                component={Search}
-                options={{ title: 'Recherche' }}
-            />
-            <SearchNavigation.Screen
-                name="viewLocationListItem"
-                component={LocationListItem}
-                options={{ title: 'ListItem' }}
-            />
-        </SearchNavigation.Navigator>
-    );
-};
+const AppNavigator = () => (
+    <NavigationContainer>
+        <TabNavigator/>
+    </NavigationContainer>
+);
 
-const favStackScreens = () => {
-    return (
-        <SearchNavigation.Navigator
-            initialRouteName="viewLocationListItem"
-        >
-            <SearchNavigation.Screen
-                name="ViewSearch"
-                component={Search}
-                options={{ title: 'Recherche' }}
-            />
-            <SearchNavigation.Screen
-                name="viewLocationListItem"
-                component={LocationListItem}
-                options={{ title: 'ListItem' }}
-            />
-        </SearchNavigation.Navigator>
-    );
-};
-
-function RootStack() {
-    return (
-        <TabNavigation.Navigator
-            tabBarOptions={{
-                activeTintColor: Colors.mainGreen,
-            }}>
-            <TabNavigation.Screen
-                name="Recherche"
-                component={searchStackScreens}
-            />
-            <TabNavigation.Screen
-                name="Favoris"
-                component={favStackScreens}
-            />
-        </TabNavigation.Navigator>
-    );
-}
-
-export default RootStack;
+export default AppNavigator;
