@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native';
 const Home = () => {
     return (
         <Layout style={styles.container}>
-            <Text category='h1'>HOME</Text>
+            <Text status="warning" category='h1'>HOME</Text>
         </Layout>
     );
 };
