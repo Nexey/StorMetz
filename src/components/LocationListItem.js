@@ -12,28 +12,57 @@ const ArrowDownward = (props) => (
 const ArrowUpward = (props) => (
     <Icon name='arrow-upward' {...props} />
 );
-const LocationListItem = () => {
+const LocationListItem = ({ navigation }) => {
     return (
         <Layout style={styles.container}>
             <Layout style={styles.informationContainer}>
-                <Text style={styles.title}>
-                    Metz
-                </Text>
-                <Text style={[styles.data, styles.cuisine]}>
-                    Pluie, 13°C
-                </Text>
+                <Layout style={styles.title}>
+                    <Text category='h1'>
+                        Metz
+                    </Text>
+                </Layout>
                 <Layout style={styles.statsContainer}>
-                    <Layout style={styles.statContainer}>
-                        <Text
-                            style={[styles.data, styles.stat]}
-                        >
-                            7°C
-                        </Text>
+                    <Text>
+                        Pluie
+                    </Text>
+                    <Text>
+                        ,
+                    </Text>
+                    <Text style={{marginLeft: 5}}>
+                        13°C
+                    </Text>
+                </Layout>
+                <Layout>
+                    <Layout>
+                        <Layout>
+                            <Layout style={styles.statsContainer}>
+                                <Text>
+                                    7°C
+                                </Text>
+                                <Text style={{marginLeft: 20}}>
+                                    16°C
+                                </Text>
+                            </Layout>
+                        </Layout>
+
+                        <Layout>
+                            <Layout style={styles.statsContainer}>
+                                <Text>
+                                    21%
+                                </Text>
+                                <Text style={{marginLeft: 20}}>
+                                    6km/h
+                                </Text>
+                                <Text style={{marginLeft: 20}}>
+                                    35%
+                                </Text>
+                            </Layout>
+                        </Layout>
                     </Layout>
                 </Layout>
+                <Layout/>
             </Layout>
         </Layout>
-
     );
 };
 
@@ -43,7 +72,6 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         paddingVertical: 8,
-        flex:1
     },
     informationContainer: {
         flex: 1,
@@ -58,12 +86,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginRight: 8,
     },
-    thumbnail: {
-        width: 128,
-        height: 128,
-        borderRadius: 12,
-        backgroundColor: Colors.mainGreen,
-    },
     title: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -73,9 +95,6 @@ const styles = StyleSheet.create({
     },
     cuisine: {
         fontStyle: 'italic',
-    },
-    icon: {
-        tintColor: Colors.mainGreen,
     },
     stat: {
         marginLeft: 4,

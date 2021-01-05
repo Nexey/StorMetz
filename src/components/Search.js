@@ -11,7 +11,7 @@ const MapIcon = (props) => (
     <Icon  {...props} name='location-pin' pack="material"/>
 );
 
-const Search = () => {
+const Search = ({ navigation }) => {
     return (
         <Layout style={styles.container}>
             <Layout style={{flex:1}}>
