@@ -14,8 +14,8 @@ export default function App() {
         <>
             <IconRegistry icons={[EvaIconsPack, FeatherIconsPack, MaterialIconsPack]} />
             <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
-            <Navigation />
-            <StatusBar style="auto" />
+                <Navigation />
+                <StatusBar style="auto" />
             </ApplicationProvider>
         </>
     );

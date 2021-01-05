@@ -11,15 +11,18 @@ const BottomTabBar = ({ navigation, state }) => (
     <BottomNavigation
         selectedIndex={state.index}
         onSelect={index => navigation.navigate(state.routeNames[index])}>
-        <BottomNavigationTab title='Search'/>
-        <BottomNavigationTab title='Item'/>
+        <BottomNavigationTab title='Recherche'/>
+        <BottomNavigationTab title='Mes lieux'/>
     </BottomNavigation>
 );
 
 const TabNavigator = () => (
-    <Navigator tabBar={props => <BottomTabBar {...props} />}>
+    <Navigator
+        initialRouteName="Search"
+        tabBar={props => <BottomTabBar {...props} />}
+    >
         <Screen name='Search' component={Search}/>
-        <Screen name='Item' component={LocationListItem}/>
+        <Screen name='Favoris' component={LocationListItem}/>
     </Navigator>
 );
 
