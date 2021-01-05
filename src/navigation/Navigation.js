@@ -10,11 +10,9 @@ const TabNavigation = createBottomTabNavigator();
 
 import Colors from '../definitions/Colors';
 
-function searchStackScreens() {
+const searchStackScreens = () => {
     return (
-        <SearchNavigation.Navigator
-            initialRouteName="ViewSearch"
-        >
+        <SearchNavigation.Navigator initialRouteName="ViewSearch" >
             <SearchNavigation.Screen
                 name="ViewSearch"
                 component={Search}
@@ -29,7 +27,7 @@ function searchStackScreens() {
     );
 };
 
-function favStackScreens() {
+const favStackScreens = () => {
     return (
         <SearchNavigation.Navigator
             initialRouteName="viewLocationListItem"
