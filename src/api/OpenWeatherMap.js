@@ -7,12 +7,19 @@ const callAPI = axios.create({
     timeout: 1000,
 });
 
-export async function getWeather(cityName = "Metz", stateCode ='', countryCode = '') {
+async function callOpenWeatherMapAPI(endpoint) {
     try {
-        const endpoint = `/find?q=${cityName}&units=metric&appid=${API_KEY}`;
         const res = await callAPI.get(endpoint);
-        return res.data.list;
+        return res;
     } catch (err) {
         console.log("API conection failed");
     }
+}
+
+export async function getWeatherByLatLong(lat, lon) {
+    return await callOpenWeatherMapAPI(`/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
+}
+
+export async function getWeatherByCityName(cityName = '', stateCode ='', countryCode = '') {
+    return await callOpenWeatherMapAPI(`/find?q=${cityName}&units=metric&appid=${API_KEY}`);
 };

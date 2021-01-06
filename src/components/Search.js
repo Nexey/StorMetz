@@ -2,9 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {Layout, Button, Icon, ListItem, Text} from '@ui-kitten/components';
 import { StyleSheet, TextInput } from 'react-native';
 import {FlatList, VirtualizedList} from "react-native-web";
-import {getWeather} from "../api/OpenWeatherMap";
+import {getWeatherByCityName, getWeatherByLatLong} from "../api/OpenWeatherMap";
 import LocationListItem from "./LocationListItem";
 import fakeMeteo from "../helpers/fakeMeteo";
+import * as Location from "expo-location";
+
 
 const SearchIcon = (props) => (
     <Icon {...props} name='search-outline' />
@@ -18,17 +20,33 @@ const Search = () => {
     const [isRefreshing, setRefreshing] = useState(false);
     const [meteo, setMeteo] = useState([]);
     const [cityName, setCityName] = useState('');
+    const [location, setLocation] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
 
-    /*
-    useEffect(() => {
-        console.log(meteo);
-    }, [meteo]);
-    // */
 
-    const requestWeather = async() => {
+    const requestWeatherByLatLon = async() => {
         try {
-            const openWeatherData = await getWeather(cityName);
-            openWeatherData === undefined?console.log("Nothing retrieved"):setMeteo(openWeatherData);
+
+            let { status } = await Location.requestPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location);
+
+            const openWeatherData = await getWeatherByLatLong(location.coords.latitude, location.coords.longitude);
+            openWeatherData === undefined?console.log("Nothing retrieved"):setMeteo(openWeatherData.data);
+
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    const requestWeatherByCityName = async() => {
+        try {
+            const openWeatherData = await getWeatherByCityName(cityName);
+            openWeatherData === undefined?console.log("Nothing retrieved"):setMeteo(openWeatherData.data.list[0]);
         } catch (error) {
             console.log(error.message);
         }
@@ -43,7 +61,7 @@ const Search = () => {
     const afficherPremierElement = () => {
         if (meteo.length !== 0)
             return(
-                <LocationListItem locationMeteoData={meteo[0]} />
+                <LocationListItem locationMeteoData={meteo} />
                 //<FlatList data={meteo} extraData={meteo} keyExtractor={(item) => item.id.toString()} renderItem={({item}) => renderItem(item)} />
             );
     };
@@ -60,12 +78,12 @@ const Search = () => {
             </Layout>
             <Button
                 title="Rechercher"
-                onPress={() => requestWeather(cityName)}
+                onPress={requestWeatherByCityName}
                 accessoryLeft={SearchIcon}
             >Rechercher</Button>
             <Button
                 title="Localiser"
-                onPress={() => { console.log('Coucou'); }}
+                onPress={requestWeatherByLatLon}
                 accessoryLeft={MapIcon}
             >Me localiser</Button>
             <Layout style={{flex:5}}/>
