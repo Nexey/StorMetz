@@ -7,10 +7,10 @@ import LocationListItem from "./LocationListItem";
 import fakeMeteo from "../helpers/fakeMeteo";
 
 const SearchIcon = (props) => (
-    <Icon  {...props} name='search-outline' />
+    <Icon {...props} name='search-outline' />
 );
 const MapIcon = (props) => (
-    <Icon  {...props} name='location-pin' pack="material"/>
+    <Icon {...props} name='location-pin' pack="material"/>
 );
 
 
@@ -19,9 +19,11 @@ const Search = () => {
     const [meteo, setMeteo] = useState([]);
     const [cityName, setCityName] = useState('');
 
+    /*
     useEffect(() => {
         console.log(meteo);
     }, [meteo]);
+    // */
 
     const requestWeather = async() => {
         try {
@@ -32,24 +34,18 @@ const Search = () => {
         }
     };
 
+    function renderItem({item}) {
+        console.log(item);
+        return ( <></> );
+        //return ( <LocationListItem locationMeteoData={item} /> );
+    };
+
     const afficherPremierElement = () => {
-        return(
-            meteo.length === 0 ?
-                (<></>) :
-                (
-                    /*
-                    <FlatList
-                        data={meteo}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={({ item }) => (
-                        //*/
-                            <LocationListItem locationMeteoData={meteo[0]} />
-                        /*
-                        )}
-                    />
-                // */
-                )
-        );
+        if (meteo.length !== 0)
+            return(
+                <LocationListItem locationMeteoData={meteo[0]} />
+                //<FlatList data={meteo} extraData={meteo} keyExtractor={(item) => item.id.toString()} renderItem={({item}) => renderItem(item)} />
+            );
     };
 
     return (
