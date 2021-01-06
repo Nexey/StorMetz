@@ -22,7 +22,7 @@ const TabNavigator = () => (
         tabBar={props => <BottomTabBar {...props} />}
     >
         <Screen name='Search' component={Search}/>
-        <Screen name='Favoris' component={LocationListItem}/>
+        <Screen name='Favoris' component={Search}/>
     </Navigator>
 );
 
