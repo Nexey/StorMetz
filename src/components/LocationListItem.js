@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import {Layout, Text, Icon, Button} from '@ui-kitten/components';
+import {Layout, Text, Icon, Button, ListItem} from '@ui-kitten/components';
 import { StyleSheet } from 'react-native';
-import {FlatList} from "react-native-web";
-import Colors from "../definitions/Colors";
-import {getWeather} from "../api/OpenWeatherMap";
 
 const ArrowDownward = (props) => (
     <Icon name='arrow-downward' {...props} />
@@ -13,18 +10,7 @@ const ArrowUpward = (props) => (
 );
 
 
-const LocationListItem = () => {
-    const [meteo, setMeteo] = useState([]);
-
-    const requestWeather = async() => {
-        try {
-            const openWeatherMapSearchResult = await getWeather("Metz");
-            console.log(openWeatherMapSearchResult);
-        } catch (error) {
-            console.log("Erreur api");
-        }
-    }
-
+const LocationListItem = ({locationMeteoData}) => {
     return (
         <Layout style={styles.container}>
             <Layout style={styles.informationContainer}>
@@ -69,12 +55,6 @@ const LocationListItem = () => {
                             </Text>
                         </Layout>
                     </Layout>
-                </Layout>
-                <Layout>
-                    <Button
-                        title="Rechercher"
-                        onPress={requestWeather}
-                    >Rechercher</Button>
                 </Layout>
             </Layout>
         </Layout>
