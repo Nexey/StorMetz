@@ -1,10 +1,18 @@
+import axios from "axios";
 const API_KEY = '66b84481c895aa59bb2fe44d7a263372';
+const url = "https://api.openweathermap.org/data/2.5";
 
-export async function getWeather(cityName = '', stateCode ='', countryCode = '') {
+const callAPI = axios.create({
+    baseURL: url,
+    timeout: 1000,
+});
+
+export async function getWeather(cityName = "Metz", stateCode ='', countryCode = '') {
     try {
-        let url = `http://api.openweathermap.org/data/2.5/find?q=${cityName}&units=metric&appid=` + API_KEY;
-        return await fetch(url).then((response) => response.json());
-    } catch (error) {
-        console.log(`Error with function getWeather ${error.message}`);
+        const endpoint = `/find?q=${cityName}&units=metric&appid=${API_KEY}`;
+        const res = await callAPI.get(endpoint);
+        return res.data.list;
+    } catch (err) {
+        console.log("API conection failed");
     }
 };

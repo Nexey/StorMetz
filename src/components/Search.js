@@ -15,33 +15,42 @@ const MapIcon = (props) => (
 
 
 const Search = () => {
-    const [meteo, setMeteo] = useState(fakeMeteo);
+    const [isRefreshing, setRefreshing] = useState(false);
+    const [meteo, setMeteo] = useState([]);
     const [cityName, setCityName] = useState('');
 
-    const test = () => {
+    useEffect(() => {
         console.log(meteo);
-    }
-
-    useEffect(() => {
-        test();
     }, [meteo]);
-
-    useEffect(() => {
-        console.log(cityName);
-    }, [cityName]);
 
     const requestWeather = async() => {
         try {
-            const openWeatherMapSearchResult = await getWeather(cityName);
-            setMeteo(openWeatherMapSearchResult['list']);
+            const openWeatherData = await getWeather(cityName);
+            openWeatherData === undefined?console.log("Nothing retrieved"):setMeteo(openWeatherData);
         } catch (error) {
             console.log(error.message);
         }
-    }
+    };
 
-    const renderItem = ({ item }) => (
-        <LocationListItem locationMeteoData={item} />
-    );
+    const afficherPremierElement = () => {
+        return(
+            meteo.length === 0 ?
+                (<></>) :
+                (
+                    /*
+                    <FlatList
+                        data={meteo}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => (
+                        //*/
+                            <LocationListItem locationMeteoData={meteo[0]} />
+                        /*
+                        )}
+                    />
+                // */
+                )
+        );
+    };
 
     return (
         <Layout style={styles.container}>
@@ -64,12 +73,53 @@ const Search = () => {
                 accessoryLeft={MapIcon}
             >Me localiser</Button>
             <Layout style={{flex:5}}/>
-            <LocationListItem locationMeteoData={meteo[0]} />
+            {afficherPremierElement()}
         </Layout>
     );
 };
 
 /*
+
+            <FlatList
+                data={meteo}
+                key="id"
+                keyExtractor={item => item.id.toString()}
+                renderItem={({item}) => (
+                    <LocationListItem restaurantData={item} />
+                )}
+
+                refreshing={isRefreshing}
+                onEndReachedThreshold={0.5}
+            />
+            <LocationListItem locationMeteoData={meteo[0]} />
+            <LocationListItem locationMeteoData={meteo[0]} />
+            <FlatList
+                data={meteo}
+                keyExtractor={(item, index) => 'key'+index}
+                renderItem={({ item }) => (
+                    <LocationListItem restaurantData={item} />
+                )}
+                onEndReachedThreshold={0.5}
+            />
+    const renderItem = ({ item }) => (
+        <LocationListItem locationMeteoData={item} />
+    );
+
+    const renderMeteoData = () => {
+        console.log("oui");
+        Object.keys(meteo).map(function(keyName, keyIndex) {
+            console.log(keyName);
+        })
+    };
+
+    <LocationListItem locationMeteoData={meteo[0]} />
+    <FlatList
+        data={meteo}
+        renderItem={({item}) => (
+            <LocationListItem locationMeteoData={item} />
+        )}
+        keyExtractor={item => item.id.toString()}
+    />
 VirtualizedList
     <FlatList
         data={meteo}
@@ -94,6 +144,7 @@ export default Search;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        margin: 15,
         justifyContent: 'center',
     }
 });
