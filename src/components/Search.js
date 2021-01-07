@@ -14,7 +14,7 @@ const MapIcon = (props) => (
     <Icon {...props} name='location-pin' pack="material"/>
 );
 
-const Search = () => {
+const Search = ({navigation}) => {
     //const [isRefreshing, setRefreshing] = useState(false);
     const [meteo, setMeteo] = useState(fakeMeteo);
     const [cityName, setCityName] = useState('');
@@ -70,6 +70,10 @@ const Search = () => {
         }
     };
 
+    const navigateToLocationDetails = (locationData) => {
+        navigation.navigate("ViewGPSLocation", {locationData});
+    };
+
     function renderItem({item}) {
         /*
         let date = moment()
@@ -78,10 +82,7 @@ const Search = () => {
         console.log(date + ' ' + item);
         */
 
-        return (
-            <Layout style={{flex:1}}>
-                <LocationListItem locationMeteoData={item} />
-            </Layout>);
+        return (<LocationListItem locationMeteoData={item} onClick={navigateToLocationDetails} />);
     }
 
     const afficherPremierElement = () => {

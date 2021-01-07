@@ -1,10 +1,12 @@
 import React from 'react';
-import {Layout, Text} from '@ui-kitten/components';
-import { StyleSheet } from 'react-native';
+import {Button, Layout, Text} from '@ui-kitten/components';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import fakeMeteo from "../helpers/fakeMeteo";
 
 
-const LocationListItem = ({locationMeteoData, locationMeteoData : {main, wind, weather}}) => {
+const LocationListItem = ({onClick, locationMeteoData, locationMeteoData : {main, weather}}) => {
     return (
+        <TouchableOpacity onPress={() => (onClick(locationMeteoData))}>
             <Layout style={styles.container}>
                 <Layout style={styles.informationContainer}>
                     <Layout style={styles.title}>
@@ -13,38 +15,19 @@ const LocationListItem = ({locationMeteoData, locationMeteoData : {main, wind, w
                         </Text>
                     </Layout>
                     <Layout style={styles.statsContainer}>
+                        <Button
+                            title="Favori"
+                            onPress={() => (console.log("favori"))}
+                        >Rajouter aux favoris</Button>
+                    </Layout>
+                    <Layout style={styles.statsContainer}>
                         <Text>
                             {weather[0].main}, {main.temp}°C
                         </Text>
                     </Layout>
-                    <Layout>
-                        <Layout>
-                            <Layout style={styles.statsContainer}>
-                                <Text>
-                                    {main.temp_min}°C
-                                </Text>
-                                <Text style={{marginLeft: 20}}>
-                                    {main.temp_max}°C
-                                </Text>
-                            </Layout>
-                        </Layout>
-
-                        <Layout>
-                            <Layout style={styles.statsContainer}>
-                                <Text>
-                                    21%
-                                </Text>
-                                <Text style={{marginLeft: 20}}>
-                                    {wind.speed}km/h
-                                </Text>
-                                <Text style={{marginLeft: 20}}>
-                                    {main.humidity}%
-                                </Text>
-                            </Layout>
-                        </Layout>
-                    </Layout>
                 </Layout>
             </Layout>
+        </TouchableOpacity>
     );
 };
 

@@ -8,13 +8,16 @@ import {MaterialIconsPack} from "./src/helpers/material-icons";
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
 
 import Navigation from "./src/navigation/Navigation";
+import Store from './src/store/config';
+import {HomeScreen} from "./src/components/home.component";
+import AppNavigator from "./src/navigation/Navigation";
 
 export default function App() {
     return (
         <>
             <IconRegistry icons={[EvaIconsPack, FeatherIconsPack, MaterialIconsPack]} />
-            <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
-                <Navigation />
+            <ApplicationProvider store={Store} {...eva} theme={{ ...eva.light, ...theme }}>
+                <AppNavigator/>
                 <StatusBar style="auto" />
             </ApplicationProvider>
         </>
