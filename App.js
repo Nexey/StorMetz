@@ -8,14 +8,13 @@ import {MaterialIconsPack} from "./src/helpers/material-icons";
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
 
 import Navigation from "./src/navigation/Navigation";
-import Search from "./src/components/Search";
 
 export default function App() {
     return (
         <>
             <IconRegistry icons={[EvaIconsPack, FeatherIconsPack, MaterialIconsPack]} />
             <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
-                <Search />
+                <Navigation />
                 <StatusBar style="auto" />
             </ApplicationProvider>
         </>

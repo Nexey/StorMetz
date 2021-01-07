@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {Layout, Text, Icon, Button, ListItem} from '@ui-kitten/components';
+import React from 'react';
+import {Layout, Text} from '@ui-kitten/components';
 import { StyleSheet } from 'react-native';
 
 
