@@ -17,7 +17,7 @@ async function callOpenWeatherMapAPI(endpoint) {
 }
 
 export async function getWeatherByLatLong(lat, lon) {
-    return await callOpenWeatherMapAPI(`/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
+    return await callOpenWeatherMapAPI(`/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`);
 }
 
 export async function getWeatherByCityName(cityName = '', stateCode ='', countryCode = '') {

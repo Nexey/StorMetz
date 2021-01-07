@@ -1,4 +1,6 @@
-const fakeMeteo = [
+const fakeMeteo = [];
+
+fakeMeteo.push(
     {
         id:6454368,
         name:"Metz",
@@ -36,6 +38,6 @@ const fakeMeteo = [
             }
         ]
     },
-];
+);
 
 export default fakeMeteo;

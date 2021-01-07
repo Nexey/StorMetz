@@ -9,10 +9,8 @@ import {EvaIconsPack} from '@ui-kitten/eva-icons';
 
 import Navigation from "./src/navigation/Navigation";
 import Search from "./src/components/Search";
-import LocationFinder from "./src/components/LocationFinder";
 
 export default function App() {
-
     return (
         <>
             <IconRegistry icons={[EvaIconsPack, FeatherIconsPack, MaterialIconsPack]} />
