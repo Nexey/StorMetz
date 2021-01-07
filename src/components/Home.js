@@ -6,6 +6,7 @@ const Home = () => {
     return (
         <Layout style={styles.container}>
             <Text status="danger" category='h1'>HOME</Text>
+
         </Layout>
     );
 };

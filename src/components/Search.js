@@ -15,11 +15,9 @@ const MapIcon = (props) => (
 );
 
 const Search = ({navigation}) => {
-    //const [isRefreshing, setRefreshing] = useState(false);
     const [meteo, setMeteo] = useState(fakeMeteo);
     const [cityName, setCityName] = useState('');
     const [location, setLocation] = useState([]);
-    //const [errorMsg, setErrorMsg] = useState(null);
 
     useEffect( () => {
         if (location.length !== 0) {
