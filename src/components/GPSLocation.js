@@ -1,13 +1,25 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Button, Icon, Layout, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
 import {SafeAreaView, StyleSheet } from 'react-native';
+import {getLocationNameByLatLon, getWeatherByLatLong} from "../api/OpenWeatherMap";
 
 const BackIcon = (props) => (
     <Icon {...props} name='arrow-back' />
 );
 
 const GPSLocation = ({navigation, route, route : {params, params : {locationData, locationDataPlus}} }) => {
-    //console.log(JSON.stringify(locationDataPlus));
+
+    /*
+    useEffect(() => {
+        (async () => {
+            let test = await getLocationNameByLatLon(locationData.coord.lat, locationData.coord.lon);
+            console.log(JSON.stringify(test.data[0]));
+        })();
+    }, [])
+
+
+    //console.log(JSON.stringify(locationData.coord.lat + locationData.coord.lon));
+    //*/
 
     const navigateBack = () => {
         navigation.goBack();

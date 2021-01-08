@@ -37,7 +37,6 @@ const Search = ({navigation}) => {
         (async () => {
             if (location !== undefined) {
                 if (location.length !== 0) {
-                    setIsLoading(true);
                     try {
                         let openWeatherData = await getWeatherByLatLong(location.coords.latitude, location.coords.longitude);
                         await setMeteo([]);
@@ -57,6 +56,7 @@ const Search = ({navigation}) => {
     }, [location]);
 
     const requestWeatherByLatLon = async() => {
+        setIsLoading(true);
         try {
             let response = await requestLocation();
             await setLocation(response);
@@ -131,7 +131,7 @@ const Search = ({navigation}) => {
                     (<DisplayError message='Impossible de récupérer les données météorologiques' />) :
                     (isLoading ?
                         (<Layout style={styles.containerLoading}>
-                            <ActivityIndicator size="large" />
+                            <ActivityIndicator size="large" color="#0000ff" />
                         </Layout>) :
                     afficherPremierElement()
                     )

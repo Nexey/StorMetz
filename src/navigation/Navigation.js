@@ -15,7 +15,6 @@ const SearchIcon = (props) => (
     <Icon {...props} name='search-outline' />
 );
 
-
 const BottomTabBar = ({ navigation, state }) => (
     <BottomNavigation
         selectedIndex={state.index}
