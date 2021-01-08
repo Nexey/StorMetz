@@ -22,39 +22,47 @@ const Search = ({navigation}) => {
     const [isError, setIsError] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect( () => {
-        if (location.length !== 0) {
-            const test = async() => {
-                try {
-                    let openWeatherData = await getWeatherByLatLong(location.coords.latitude, location.coords.longitude);
-                    await setMeteo([]);
-                    if (openWeatherData===undefined)
-                        console.log("Nothing retrieved");
-                    else {
-                        await setMeteo(meteo => [...meteo, openWeatherData.data]);
-                        setIsLoading(false);
+    const requestLocation = async() => {
+        if (location.length === 0) {
+            let {status} = await Location.requestPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+                return;
+            }
+        }
+        return await Location.getCurrentPositionAsync({});
+    }
+
+    useEffect(() => {
+        (async () => {
+            if (location !== undefined) {
+                if (location.length !== 0) {
+                    setIsLoading(true);
+                    try {
+                        let openWeatherData = await getWeatherByLatLong(location.coords.latitude, location.coords.longitude);
+                        await setMeteo([]);
+                        if (openWeatherData === undefined)
+                            console.log("Nothing retrieved");
+                        else {
+                            await setMeteo(meteo => [...meteo, openWeatherData.data]);
+                            setIsLoading(false);
+                        }
+                    } catch (error) {
+                        console.log(error.message);
+                        setIsError(true);
                     }
-                } catch (error) {
-                    console.log(error.message);
-                    setIsError(true);
                 }
             }
-            test();
-        }
+        })();
     }, [location]);
 
     const requestWeatherByLatLon = async() => {
-        setIsLoading(true);
         try {
-            let {status} = await Location.requestPermissionsAsync();
-            if (status !== 'granted') {
-                //setErrorMsg('Permission to access location was denied');
-                return;
-            }
-            let locationTemp = await Location.getCurrentPositionAsync({});
-            await setLocation(locationTemp);
+            let response = await requestLocation();
+            await setLocation(response);
         } catch (error) {
             console.log(error.message);
+            setIsError(true);
         }
     }
 
@@ -62,7 +70,6 @@ const Search = ({navigation}) => {
         setIsLoading(true);
         try {
             const openWeatherData = await getWeatherByCityName(cityName);
-            //console.log(JSON.stringify(openWeatherData.data.list));
             await setMeteo([]);
             if (openWeatherData===undefined)
                 console.log("Nothing retrieved");
@@ -120,11 +127,11 @@ const Search = ({navigation}) => {
                     >Me localiser</Button>
                     <Button
                         title="Reset"
-                        onPress={() => (setMeteo(fakeMeteo), setIsLoading(false))}
+                        onPress={() => {setMeteo(fakeMeteo); setIsLoading(false);}}
                     >Reset données</Button>
                     <Layout style={{flex:5}}/>
                     {isError ?
-                        (<DisplayError message='Impossible de récupérer les données du restaurants' />) :
+                        (<DisplayError message='Impossible de récupérer les données météorologiques' />) :
                         (isLoading ?
                             (<Layout style={styles.containerLoading}>
                                 <ActivityIndicator size="large" />

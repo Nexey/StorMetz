@@ -7,8 +7,8 @@ const BackIcon = (props) => (
 );
 
 const GPSLocation = ({navigation, route, route : {params, params : {locationData, locationDataPlus}} }) => {
-    console.log(JSON.stringify(locationDataPlus));
-    //
+    //console.log(JSON.stringify(locationDataPlus));
+
     const navigateBack = () => {
         navigation.goBack();
     };
