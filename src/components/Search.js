@@ -103,43 +103,39 @@ const Search = ({navigation}) => {
             );
     };
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={styles.container}>
             <TopNavigation title='MyApp' alignment='center'/>
-                <Layout style={styles.container}>
-                    <Layout style={{flex:1}}>
-                        <Layout style={{flex:1}}/>
-                        <TextInput style={{flex: 1}} placeholder="Ville" onChangeText={(text) => setCityName(text)}/>
-                        <Layout style={{flexDirection: 'row', flex:1}}>
-                            <TextInput style={{flex: 1}} placeholder="Code postal" />
-                            <TextInput style={{flex: 1}} placeholder="Pays" />
-                        </Layout>
+                <Layout style={styles.searchContainer}>
+                    <TextInput style={styles.inputRestaurantName} placeholder="Ville" onChangeText={(text) => setCityName(text)}/>
+                    <Layout style={styles.statsContainer}>
+                        <TextInput style={styles.inputRestaurantName} placeholder="Code postal" />
+                        <TextInput style={styles.inputRestaurantName} placeholder="Pays" />
                     </Layout>
-
-                    <Button
-                        title="Rechercher"
-                        onPress={requestWeatherByCityName}
-                        accessoryLeft={SearchIcon}
-                    >Rechercher</Button>
-                    <Button
-                        title="Localiser"
-                        onPress={requestWeatherByLatLon}
-                        accessoryLeft={MapIcon}
-                    >Me localiser</Button>
-                    <Button
-                        title="Reset"
-                        onPress={() => {setMeteo(fakeMeteo); setIsLoading(false);}}
-                    >Reset données</Button>
-                    <Layout style={{flex:5}}/>
-                    {isError ?
-                        (<DisplayError message='Impossible de récupérer les données météorologiques' />) :
-                        (isLoading ?
-                            (<Layout style={styles.containerLoading}>
-                                <ActivityIndicator size="large" />
-                            </Layout>) :
-                        afficherPremierElement()
-                        )
-                    }
                 </Layout>
+
+                <Button
+                    title="Rechercher"
+                    onPress={requestWeatherByCityName}
+                    accessoryLeft={SearchIcon}
+                >Rechercher</Button>
+                <Button
+                    title="Localiser"
+                    onPress={requestWeatherByLatLon}
+                    accessoryLeft={MapIcon}
+                >Me localiser</Button>
+                <Button
+                    title="Reset"
+                    onPress={() => {setMeteo(fakeMeteo); setIsLoading(false);}}
+                >Reset données</Button>
+                {isError ?
+                    (<DisplayError message='Impossible de récupérer les données météorologiques' />) :
+                    (isLoading ?
+                        (<Layout style={styles.containerLoading}>
+                            <ActivityIndicator size="large" />
+                        </Layout>) :
+                    afficherPremierElement()
+                    )
+                }
         </SafeAreaView>
     );
 };
@@ -147,17 +143,41 @@ const Search = ({navigation}) => {
 export default Search;
 
 const styles = StyleSheet.create({
-    containerLoading: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     container: {
         flex: 1,
-        margin: 15,
+        paddingHorizontal: 12,
+        marginTop: 16,
+    },
+    searchContainer: {
+        marginBottom: 16,
+    },
+    inputRestaurantName: {
+        marginBottom: 8,
+    },
+    informationContainer: {
+        flex: 1,
+        marginLeft: 0,
         justifyContent: 'center',
     },
-    text: {
-
-    }
+    statsContainer: {
+        flexDirection: 'row',
+        marginTop: 12,
+    },
+    statContainer: {
+        flexDirection: 'row',
+        marginRight: 8,
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    data: {
+        fontSize: 16,
+    },
+    cuisine: {
+        fontStyle: 'italic',
+    },
+    stat: {
+        marginLeft: 4,
+    },
 });
