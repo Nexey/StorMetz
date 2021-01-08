@@ -29,6 +29,8 @@ const GPSLocation = ({navigation, route, route : {params, params : {locationData
         <TopNavigationAction icon={BackIcon} onPress={navigateBack}/>
     );
 
+
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <TopNavigation title='MyApp' alignment='center' accessoryLeft={BackAction}/>

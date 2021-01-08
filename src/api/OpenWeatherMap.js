@@ -33,7 +33,7 @@ async function callOpenWeatherMapAPI(endpoint) {
 }
 
 export async function getLocationNameByLatLon(lat, lon) {
-    return await callOpenWeatherMapAPIReverse(`/reverse?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
+    return await callOpenWeatherMapAPIReverse(`/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${API_KEY}`);
 }
 
 export async function getWeatherByLatLong(lat, lon) {
