@@ -57,11 +57,6 @@ const Search = ({navigation}) => {
             console.log(error.message);
         }
     }
-    /*
-    useEffect(() => {
-        console.log(JSON.stringify(meteo));
-    }, [meteo]);
-    //*/
 
     const requestWeatherByCityName = async() => {
         setIsLoading(true);
@@ -82,7 +77,8 @@ const Search = ({navigation}) => {
     };
 
     const navigateToLocationDetails = async(locationData) => {
-        const locationDataPlus = await getWeatherOneCall(locationData.coord.lat, locationData.coord.lon);
+        const test = await getWeatherOneCall(locationData.coord.lat, locationData.coord.lon);
+        const locationDataPlus = test.data;
         navigation.navigate("ViewGPSLocation", {locationData, locationDataPlus});
     };
 

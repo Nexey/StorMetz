@@ -1,17 +1,14 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React from 'react';
 import {Button, Icon, Layout, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
-import {SafeAreaView, StyleSheet, ActivityIndicator } from 'react-native';
-import {getWeatherOneCall} from "../api/OpenWeatherMap";
-import DisplayError from "./DisplayError";
-import moment from "moment";
-import fakeMeteo from "../helpers/fakeMeteo";
+import {SafeAreaView, StyleSheet } from 'react-native';
 
 const BackIcon = (props) => (
     <Icon {...props} name='arrow-back' />
 );
 
 const GPSLocation = ({navigation, route, route : {params, params : {locationData, locationDataPlus}} }) => {
-
+    console.log(JSON.stringify(locationDataPlus));
+    //
     const navigateBack = () => {
         navigation.goBack();
     };
@@ -56,7 +53,7 @@ const GPSLocation = ({navigation, route, route : {params, params : {locationData
                             <Layout>
                                 <Layout style={styles.statsContainer}>
                                     <Text>
-                                        {locationDataPlus.data.current.clouds}%
+                                        {locationDataPlus.current.clouds}%
                                     </Text>
                                     <Text style={{marginLeft: 20}}>
                                         {locationData.wind.speed}km/h
