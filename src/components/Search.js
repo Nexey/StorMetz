@@ -8,12 +8,6 @@ import * as Location from "expo-location";
 import DisplayError from "./DisplayError";
 //import moment from "moment";
 
-const SearchIcon = (props) => (
-    <Icon {...props} name='search-outline' />
-);
-const MapIcon = (props) => (
-    <Icon {...props} name='location-pin' pack="material"/>
-);
 
 const Search = ({navigation}) => {
     const [meteo, setMeteo] = useState([]);
@@ -22,6 +16,12 @@ const Search = ({navigation}) => {
     const [isError, setIsError] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
+    const SearchIcon = (props) => (
+        <Icon {...props} name='search-outline' />
+    );
+    const MapIcon = (props) => (
+        <Icon {...props} name='location-pin' pack="material"/>
+    );
     const requestLocation = async() => {
         if (location.length === 0) {
             let {status} = await Location.requestPermissionsAsync();
@@ -102,7 +102,6 @@ const Search = ({navigation}) => {
                 />
             );
     };
-
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <TopNavigation title='MyApp' alignment='center'/>
@@ -115,6 +114,7 @@ const Search = ({navigation}) => {
                             <TextInput style={{flex: 1}} placeholder="Pays" />
                         </Layout>
                     </Layout>
+
                     <Button
                         title="Rechercher"
                         onPress={requestWeatherByCityName}
@@ -156,5 +156,8 @@ const styles = StyleSheet.create({
         flex: 1,
         margin: 15,
         justifyContent: 'center',
+    },
+    text: {
+
     }
 });
