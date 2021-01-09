@@ -3,7 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {BottomNavigation, BottomNavigationTab, Icon} from '@ui-kitten/components';
 import Colors from '../definitions/Colors';
-import MyObject from "../components/MeteoInfo";
 import Home from "../components/Home";
 import {NavigationContainer} from "@react-navigation/native";
 import MeteoInfo from "../components/MeteoInfo";

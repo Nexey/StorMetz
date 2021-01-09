@@ -11,6 +11,7 @@ import DisplayError from "./DisplayError";
 const Home = ({navigation, favMeteoInfos}) => {
     const [meteoInfos, setMeteoInfos] = useState([]);
     const [isError, setIsError] = useState(false);
+    const [error, setError] = useState('');
     const [cityName, setCityName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [location, setLocation] = useState([]);
@@ -35,50 +36,52 @@ const Home = ({navigation, favMeteoInfos}) => {
     }, [location]);
 
     const requestLocation = async() => {
+        setIsLoading(true);
         if (location.length === 0) {
             let {status} = await Location.requestPermissionsAsync();
             if (status !== 'granted') {
-                console.log('Permission to access location was denied');
+                setError('Les permissions pour accéder aux données de localisation ont été refusées');
                 return;
             }
         }
+        setIsLoading(false);
         return await Location.getCurrentPositionAsync({});
     }
 
     const requestWeather = async(functionToCall, param1 = '', param2 = '') => {
+        setIsLoading(true);
+        setIsError(false);
+        await setMeteoInfos([]);
         try {
             const openWeatherData = await functionToCall(param1, param2);
-            await setMeteoInfos([]);
-            if (openWeatherData===undefined)
-                console.log("Nothing retrieved");
+            if (openWeatherData===undefined) {
+                setError("Aucun résultat n'a été trouvé.");
+                setIsError(true);
+            }
             else {
-                let sortedData = [];
                 "list" in openWeatherData["data"] ?
-                    sortedData = openWeatherData["data"]["list"] :
-                    sortedData.push(openWeatherData["data"]);
-                await setMeteoInfos(meteoInfos => [...meteoInfos, ...sortedData]);
+                    await setMeteoInfos(openWeatherData["data"]["list"]) :
+                    await setMeteoInfos(meteoInfos => [...meteoInfos, openWeatherData["data"]]);
             }
         } catch (error) {
-            console.log(error.message);
+            setError(error.message);
             setIsError(true);
         }
+        setIsLoading(false);
     }
 
     const requestWeatherByLatLon = async() => {
-        setIsLoading(true);
         try {
             let response = await requestLocation();
             await setLocation(response);
         } catch (error) {
-            console.log(error.message);
+            setError(error.message);
             setIsError(true);
         }
     }
 
     const requestWeatherByCityName = async() => {
-        setIsLoading(true);
         await requestWeather(getWeatherByCityName, cityName);
-        setIsLoading(false);
     };
 
     const navigateToMeteoInfoDetails = async(meteoInfoData) => {
@@ -112,7 +115,7 @@ const Home = ({navigation, favMeteoInfos}) => {
                 >Me localiser</Button>
             </Layout>
             {isError ?
-                (<DisplayError message='Impossible de récupérer les données météorologiques' />) :
+                (<DisplayError message={error} />) :
                 (isLoading ?
                     (<Layout style={styles.containerLoading}>
                         <ActivityIndicator size="large" color="#0000ff" />
