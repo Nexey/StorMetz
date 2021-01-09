@@ -45,7 +45,7 @@ const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
         try {
             for (const id of favMeteoInfos) {
                 objects.push(getObjectById(id));
-            };
+            }
             await setMeteoInfos(objects);
         } catch (error) {
             console.log("erreur xD");

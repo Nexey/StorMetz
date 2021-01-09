@@ -28,10 +28,11 @@ const Home = ({navigation, favMeteoInfos}) => {
             if (location !== undefined) {
                 if (location.length !== 0) {
                     try {
-                        let openWeatherData = await getWeatherByLatLong(location.coords.latitude, location.coords.longitude);
+                        const openWeatherData = await getWeatherByLatLong(location.coords.latitude, location.coords.longitude);
                         await setMeteoInfos([]);
-                        if (openWeatherData === undefined)
+                        if (openWeatherData === undefined) {
                             console.log("Nothing retrieved");
+                        }
                         else {
                             await setMeteoInfos(meteoInfos => [...meteoInfos, openWeatherData.data]);
                             setIsLoading(false);
@@ -57,6 +58,35 @@ const Home = ({navigation, favMeteoInfos}) => {
         return await Location.getCurrentPositionAsync({});
     }
 
+
+    /*
+    const foo = (test) => {
+        return (test + "Hello");
+    }
+
+    const bar = (FUNCTION_AS_PARAMETER, test) => {
+        return FUNCTION_AS_PARAMETER(test);
+    }
+
+    console.log(bar(foo, "Goodbye"));
+    //*/
+
+    const requestWeather = async(functionToCall, info) => {
+        try {
+            const openWeatherData = await functionToCall(info);
+            await setMeteoInfos([]);
+            if (openWeatherData===undefined)
+                console.log("Nothing retrieved");
+            else {
+                let sortedData = "list" in openWeatherData["data"] ? openWeatherData["data"]["list"]:openWeatherData["data"];
+                await setMeteoInfos(meteoInfos => [...meteoInfos, ...sortedData]);
+            }
+        } catch (error) {
+            console.log(error.message);
+            setIsError(true);
+        }
+    }
+
     const requestWeatherByLatLon = async() => {
         setIsLoading(true);
         try {
@@ -70,18 +100,7 @@ const Home = ({navigation, favMeteoInfos}) => {
 
     const requestWeatherByCityName = async() => {
         setIsLoading(true);
-        try {
-            const openWeatherData = await getWeatherByCityName(cityName);
-            await setMeteoInfos([]);
-            if (openWeatherData===undefined)
-                console.log("Nothing retrieved");
-            else {
-                await setMeteoInfos(meteoInfos => [...meteoInfos, ...openWeatherData.data.list]);
-            }
-        } catch (error) {
-            console.log(error.message);
-            setIsError(true);
-        }
+        await requestWeather(getWeatherByCityName, cityName);
         setIsLoading(false);
     };
 
