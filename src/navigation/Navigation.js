@@ -20,7 +20,7 @@ const BottomTabBar = ({ navigation, state }) => (
         selectedIndex={state.index}
         onSelect={index => navigation.navigate(state.routeNames[index])}>
         <BottomNavigationTab title='Recherche' icon={SearchIcon}/>
-        <BottomNavigationTab title='Mes Favoris' icon={StarIcon}>Test</BottomNavigationTab>
+        <BottomNavigationTab title='Mes Favoris' icon={StarIcon}/>
     </BottomNavigation>
 );
 

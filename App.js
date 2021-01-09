@@ -11,11 +11,12 @@ import Navigation from "./src/navigation/Navigation";
 import Store from './src/store/config';
 import {HomeScreen} from "./src/components/home.component";
 import AppNavigator from "./src/navigation/Navigation";
+import {FontAwesome5IconsPack} from "./src/helpers/fontawesome5-icons";
 
 export default function App() {
     return (
         <>
-            <IconRegistry icons={[EvaIconsPack, FeatherIconsPack, MaterialIconsPack]} />
+            <IconRegistry icons={[EvaIconsPack, FeatherIconsPack, MaterialIconsPack, FontAwesome5IconsPack]} />
             <ApplicationProvider store={Store} {...eva} theme={{ ...eva.light, ...theme }}>
                 <AppNavigator/>
                 <StatusBar style="auto" />

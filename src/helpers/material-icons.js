@@ -2,11 +2,6 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export const MaterialIconsPack = {
-    name: 'material',
-    icons: createIconsMap(),
-};
-
 function createIconsMap() {
     return new Proxy({}, {
         get(target, name) {
@@ -25,3 +20,8 @@ function MaterialIcon({ name, style }) {
         <Icon name={name} size={height} color={tintColor} style={iconStyle} />
     );
 }
+
+export const MaterialIconsPack = {
+    name: 'material',
+    icons: createIconsMap(),
+};

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Layout, Button, Icon, List, TopNavigation} from '@ui-kitten/components';
+import {Layout, Button, List, TopNavigation, Icon} from '@ui-kitten/components';
 import {StyleSheet, TextInput, SafeAreaView, ActivityIndicator} from 'react-native';
 import {getWeatherByCityName, getWeatherByLatLong, getWeatherOneCall} from "../api/OpenWeatherMap";
 import LocationListItem from "./LocationListItem";
@@ -8,20 +8,21 @@ import * as Location from "expo-location";
 import DisplayError from "./DisplayError";
 //import moment from "moment";
 
-
 const Search = ({navigation}) => {
     const [meteo, setMeteo] = useState([]);
     const [cityName, setCityName] = useState('');
     const [location, setLocation] = useState([]);
     const [isError, setIsError] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const SearchIcon = (props) => (
         <Icon {...props} name='search-outline' />
     );
+
     const MapIcon = (props) => (
         <Icon {...props} name='location-pin' pack="material"/>
     );
+
     const requestLocation = async() => {
         if (location.length === 0) {
             let {status} = await Location.requestPermissionsAsync();
@@ -50,6 +51,7 @@ const Search = ({navigation}) => {
                         console.log(error.message);
                         setIsError(true);
                     }
+                    setIsLoading(false);
                 }
             }
         })();
@@ -75,12 +77,12 @@ const Search = ({navigation}) => {
                 console.log("Nothing retrieved");
             else {
                 await setMeteo(meteo => [...meteo, ...openWeatherData.data.list]);
-                setIsLoading(false);
             }
         } catch (error) {
             console.log(error.message);
             setIsError(true);
         }
+        setIsLoading(false);
     };
 
     const navigateToLocationDetails = async(locationData) => {
@@ -105,37 +107,36 @@ const Search = ({navigation}) => {
     return (
         <SafeAreaView style={styles.container}>
             <TopNavigation title='MyApp' alignment='center'/>
-                <Layout style={styles.searchContainer}>
-                    <TextInput style={styles.inputRestaurantName} placeholder="Ville" onChangeText={(text) => setCityName(text)}/>
-                    <Layout style={styles.statsContainer}>
-                        <TextInput style={styles.inputRestaurantName} placeholder="Code postal" />
-                        <TextInput style={styles.inputRestaurantName} placeholder="Pays" />
-                    </Layout>
+            <Layout style={styles.searchContainer}>
+                <TextInput style={styles.inputRestaurantName} placeholder="Ville" onChangeText={(text) => setCityName(text)}/>
+                <Layout style={styles.statsContainer}>
+                    <TextInput style={styles.inputRestaurantName} placeholder="Code postal" />
+                    <TextInput style={styles.inputRestaurantName} placeholder="Pays" />
                 </Layout>
-
-                <Button
-                    title="Rechercher"
-                    onPress={requestWeatherByCityName}
-                    accessoryLeft={SearchIcon}
-                >Rechercher</Button>
-                <Button
-                    title="Localiser"
-                    onPress={requestWeatherByLatLon}
-                    accessoryLeft={MapIcon}
-                >Me localiser</Button>
-                <Button
-                    title="Reset"
-                    onPress={() => {setMeteo(fakeMeteo); setIsLoading(false);}}
-                >Reset données</Button>
-                {isError ?
-                    (<DisplayError message='Impossible de récupérer les données météorologiques' />) :
-                    (isLoading ?
-                        (<Layout style={styles.containerLoading}>
-                            <ActivityIndicator size="large" color="#0000ff" />
-                        </Layout>) :
-                    afficherPremierElement()
-                    )
-                }
+            </Layout>
+            <Button
+                title="Rechercher"
+                onPress={requestWeatherByCityName}
+                accessoryLeft={SearchIcon}
+            >Rechercher</Button>
+            <Button
+                title="Localiser"
+                onPress={requestWeatherByLatLon}
+                accessoryLeft={MapIcon}
+            >Me localiser</Button>
+            <Button
+                title="Reset"
+                onPress={() => {setMeteo(fakeMeteo); setIsLoading(false);}}
+            >Reset données</Button>
+            {isError ?
+                (<DisplayError message='Impossible de récupérer les données météorologiques' />) :
+                (isLoading ?
+                    (<Layout style={styles.containerLoading}>
+                        <ActivityIndicator size="large" color="#0000ff" />
+                    </Layout>) :
+                afficherPremierElement()
+                )
+            }
         </SafeAreaView>
     );
 };

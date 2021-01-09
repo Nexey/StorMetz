@@ -2,12 +2,21 @@ import React, {useEffect} from 'react';
 import {Button, Icon, Layout, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
 import {SafeAreaView, StyleSheet } from 'react-native';
 import {getLocationNameByLatLon, getWeatherByLatLong} from "../api/OpenWeatherMap";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
-const BackIcon = (props) => (
-    <Icon {...props} name='arrow-back' />
-);
 
 const GPSLocation = ({navigation, route, route : {params, params : {locationData, locationDataPlus}} }) => {
+    const BackIcon = (props) => (
+        <Icon {...props} name='arrow-back' />
+    );
+
+    const CloudIcon = (props) => (
+        <Icon {...props} name='cloud' pack="fontawesome5"/>
+    );
+
+    const GithubIcon = () => (
+        <Icon name='github' fill='red'/>
+    );
 
     /*
     useEffect(() => {
@@ -16,7 +25,6 @@ const GPSLocation = ({navigation, route, route : {params, params : {locationData
             console.log(JSON.stringify(test.data[0]));
         })();
     }, [])
-
 
     //console.log(JSON.stringify(locationData.coord.lat + locationData.coord.lon));
     //*/
@@ -29,57 +37,55 @@ const GPSLocation = ({navigation, route, route : {params, params : {locationData
         <TopNavigationAction icon={BackIcon} onPress={navigateBack}/>
     );
 
-
-
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <TopNavigation title='MyApp' alignment='center' accessoryLeft={BackAction}/>
-                <Layout style={styles.container}>
-                    <Layout style={styles.informationContainer}>
-                        <Layout style={styles.title}>
-                            <Text category='h1'>
-                                {locationData.name}
-                            </Text>
-                        </Layout>
-                        <Layout style={styles.statsContainer}>
-                            <Button
-                                title="Favori"
-                                //onPress={testCall}
-                            >Rajouter aux favoris</Button>
-                        </Layout>
-                        <Layout style={styles.statsContainer}>
-                            <Text>
-                                {locationData.weather[0].main}, {locationData.main.temp}°C
-                            </Text>
-                        </Layout>
+            <Layout style={styles.container}>
+                <Layout style={styles.informationContainer}>
+                    <Layout style={styles.title}>
+                        <Text category='h1'>
+                            {locationData.name}
+                        </Text>
+                    </Layout>
+                    <Layout style={styles.statsContainer}>
+                        <Button
+                            title="Favori"
+                            //onPress={testCall}
+                        >Rajouter aux favoris</Button>
+                    </Layout>
+                    <Layout style={styles.statsContainer}>
+                        <Text>
+                            {locationData.weather[0].main}, {locationData.main.temp}°C
+                        </Text>
+                    </Layout>
+                    <Layout>
                         <Layout>
-                            <Layout>
-                                <Layout style={styles.statsContainer}>
-                                    <Text>
-                                        {locationData.main.temp_min}°C
-                                    </Text>
-                                    <Text style={{marginLeft: 20}}>
-                                        {locationData.main.temp_max}°C
-                                    </Text>
-                                </Layout>
+                            <Layout style={styles.statsContainer}>
+                                <Text>
+                                    {locationData.main.temp_min}°C
+                                </Text>
+                                <Text style={{marginLeft: 20}}>
+                                    {locationData.main.temp_max}°C
+                                </Text>
                             </Layout>
+                        </Layout>
 
-                            <Layout>
-                                <Layout style={styles.statsContainer}>
-                                    <Text>
-                                        {locationDataPlus.current.clouds}%
-                                    </Text>
-                                    <Text style={{marginLeft: 20}}>
-                                        {locationData.wind.speed}km/h
-                                    </Text>
-                                    <Text style={{marginLeft: 20}}>
-                                        {locationData.main.humidity}%
-                                    </Text>
-                                </Layout>
+                        <Layout>
+                            <Layout style={styles.statsContainer}>
+                                <Text>
+                                    {locationDataPlus.current.clouds}%
+                                </Text>
+                                <Text style={{marginLeft: 20}}>
+                                    {locationData.wind.speed}km/h
+                                </Text>
+                                <Text style={{marginLeft: 20}}>
+                                    {locationData.main.humidity}%
+                                </Text>
                             </Layout>
                         </Layout>
                     </Layout>
                 </Layout>
+            </Layout>
         </SafeAreaView>
     );
 };
