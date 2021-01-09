@@ -2,14 +2,14 @@ import React from 'react';
 import {Layout, Text} from '@ui-kitten/components';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-const InfoMeteoListItem = ({onClick, infoMeteoData, infoMeteoData : {main, id}, isFav = false}) => {
+const MeteoInfoListItem = ({onClick, meteoInfoData, meteoInfoData : {main, id}, isFav = false}) => {
     return (
-        <TouchableOpacity onPress={() => (onClick(infoMeteoData))}>
+        <TouchableOpacity onPress={() => (onClick(meteoInfoData))}>
             <Layout style={styles.container}>
                 <Layout style={styles.informationContainer}>
                     <Layout style={styles.title}>
-                        <Text category='h1'>
-                            {infoMeteoData.name}
+                        <Text category='h1' status="info">
+                            {meteoInfoData.name}
                         </Text>
                     </Layout>
                 </Layout>
@@ -18,7 +18,7 @@ const InfoMeteoListItem = ({onClick, infoMeteoData, infoMeteoData : {main, id}, 
     );
 };
 
-export default InfoMeteoListItem;
+export default MeteoInfoListItem;
 
 const styles = StyleSheet.create({
     informationContainer: {
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     title: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
     },
     data: {

@@ -2,46 +2,52 @@ import React, { useState, useEffect } from 'react';
 import {StyleSheet, SafeAreaView} from 'react-native';
 import {connect} from 'react-redux';
 
-import InfoMeteoListItem from './InfoMeteoListItem';
+import MeteoInfoListItem from './MeteoInfoListItem';
 import {Layout, List} from "@ui-kitten/components";
 import fakeObjects from "../helpers/FakeObjects";
+import {getWeatherByCityID, getWeatherByCityName} from "../api/OpenWeatherMap";
 
 const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
-    const [objects, setObjects] = useState([]);
 
-    const navigateToObjectDetails = async(infoMeteoData) => {
-        navigation.navigate("ViewMeteoInfo", {infoMeteoData});
+    const [meteoInfos, setMeteoInfos] = useState([]);
+
+    const navigateToObjectDetails = async(meteoInfoData) => {
+        navigation.navigate("ViewMeteoInfo", {meteoInfoData});
     };
 
     const amIaFavMeteoINfo = (meteoInfoID) => {
         return (favMeteoInfos.findIndex(i => i === meteoInfoID) !== -1);
     };
 
-    //*
     useEffect(() => {
         (async () => {
-            await refreshObjects();
+            await refreshFavMeteoInfos();
         })();
     }, [favMeteoInfos]);
-    //*/
 
-    const getObjectById = (id) => {
-        for (let test of fakeObjects) {
-            if (id === test.id)
-                return test;
+    const getObjectById = async(id) => {
+        try {
+            const openWeatherData = await getWeatherByCityID(id);
+            if (openWeatherData===undefined)
+                console.log("Nothing retrieved");
+            else {
+                await setMeteoInfos(meteoInfos => [...meteoInfos, openWeatherData.data]);
+            }
+            //await setMeteoInfos(openWeatherData.data);
+        } catch (error) {
+            console.log("erreur ptdr");
         }
         return [];
     }
 
-    //console.log(getObjectById(6454368));
-
-    const refreshObjects = async () => {
+    const refreshFavMeteoInfos = async () => {
         let objects = [];
+        await setMeteoInfos([]);
         try {
             for (const id of favMeteoInfos) {
                 objects.push(getObjectById(id));
             };
-            setObjects(objects);
+            await setMeteoInfos(objects);
         } catch (error) {
             console.log("erreur xD");
         }
@@ -60,13 +66,13 @@ const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
     */
 
     const renderItem = ({item}) => {
-        return (<InfoMeteoListItem infoMeteoData={item} onClick={navigateToObjectDetails} isFav={amIaFavMeteoINfo(item.id)} />);
+        return (<MeteoInfoListItem meteoInfoData={item} onClick={navigateToObjectDetails} isFav={amIaFavMeteoINfo(item.id)} />);
     }
 
     return (
         <Layout style={styles.container}>
             <List
-                data={objects}
+                data={meteoInfos}
                 extraData={favMeteoInfos}
                 renderItem={renderItem}
             />

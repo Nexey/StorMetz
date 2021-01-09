@@ -7,12 +7,12 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
 
     // On pourrait définir les actions dans un fichier à part
     const saveObject = async () => {
-        const action = { type: 'SAVE_OBJECT', value: route.params.infoMeteoData.id };
+        const action = { type: 'SAVE_OBJECT', value: route.params.meteoInfoData.id };
         dispatch(action);
     }
 
     const unsaveObject = async () => {
-        const action = { type: 'UNSAVE_OBJECT', value: route.params.infoMeteoData.id };
+        const action = { type: 'UNSAVE_OBJECT', value: route.params.meteoInfoData.id };
         dispatch(action);
     }
 
@@ -21,7 +21,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
     };
 
     const displaySaveObject = () => {
-        if (favMeteoInfos.findIndex(i => i === route.params.infoMeteoData.id) !== -1) {
+        if (favMeteoInfos.findIndex(i => i === route.params.meteoInfoData.id) !== -1) {
             // L'object est sauvegardé
             return (
                 <Button
@@ -45,15 +45,15 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <TopNavigation title={route.params.infoMeteoData.name} alignment='center'/>
+            <TopNavigation title={route.params.meteoInfoData.name} alignment='center'/>
             <Layout style={styles.container}>
                 <Layout style={styles.informationContainer}>
                     <Layout style={styles.title}>
                         <Text category='h1'>
-                            Nom : {route.params.infoMeteoData.name}
+                            Nom : {route.params.meteoInfoData.name}
                         </Text>
                         <Text category='h2' status="info">
-                            ID : {route.params.infoMeteoData.id}
+                            ID : {route.params.meteoInfoData.id}
                         </Text>
                     </Layout>
                     <Layout>

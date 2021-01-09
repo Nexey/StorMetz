@@ -46,3 +46,7 @@ export async function getWeatherByCityName(cityName = '', stateCode ='', country
 export async function getWeatherOneCall(lat, lon) {
     return await callOpenWeatherMapAPI(`/onecall?lat=${lat}&units=metric&lon=${lon}&appid=${API_KEY}`);
 }
+
+export async function getWeatherByCityID(cityID = '') {
+    return await callOpenWeatherMapAPI(`/weather?id=${cityID}&appid=${API_KEY}`);
+};
