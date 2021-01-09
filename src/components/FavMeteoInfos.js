@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 
 import MeteoInfoListItem from './MeteoInfoListItem';
 import {Layout, List} from "@ui-kitten/components";
-import fakeObjects from "../helpers/FakeObjects";
 import {getWeatherByCityID, getWeatherByCityName} from "../api/OpenWeatherMap";
 
 const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {

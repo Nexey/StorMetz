@@ -1,12 +1,56 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {BottomNavigation, BottomNavigationTab, Icon} from '@ui-kitten/components';
+import Colors from '../definitions/Colors';
+import MyObject from "../components/MeteoInfo";
 import Home from "../components/Home";
-import MyObject from "../components/MeteoInfo"
-import FavObjects from "../components/FavMeteoInfos";
+import {NavigationContainer} from "@react-navigation/native";
+import MeteoInfo from "../components/MeteoInfo";
+import FavMeteoInfos from "../components/FavMeteoInfos";
 
-const { Navigator, Screen } = createBottomTabNavigator();
+const SearchNavigation = createStackNavigator();
+const FavNavigation = createStackNavigator();
+const TabNavigation = createBottomTabNavigator();
+
+function searchStackScreens() {
+
+    return (
+        <SearchNavigation.Navigator
+            initialRouteName="ViewSearch"
+        >
+            <SearchNavigation.Screen
+                name="ViewSearch"
+                component={Home}
+                options={{ title: 'Home' }}
+            />
+            <SearchNavigation.Screen
+                name="ViewMeteoInfo"
+                component={MeteoInfo}
+                options={{ title: 'My Object' }}
+            />
+        </SearchNavigation.Navigator>
+    )
+};
+
+function favStackScreens() {
+    return (
+        <FavNavigation.Navigator
+            initialRouteName="ViewFav"
+        >
+            <FavNavigation.Screen
+                name="ViewFav"
+                component={FavMeteoInfos}
+                options={{ title: 'Favoris' }}
+            />
+            <FavNavigation.Screen
+                name="ViewMeteoInfo"
+                component={MeteoInfo}
+                options={{ title: 'My Object' }}
+            />
+        </FavNavigation.Navigator>
+    )
+};
 
 const StarIcon = (props) => (
     <Icon {...props} name='star' pack="feather" width={24} height={24}/>
@@ -25,21 +69,24 @@ const BottomTabBar = ({ navigation, state }) => (
     </BottomNavigation>
 );
 
-const TabNavigator = () => (
-    <Navigator
-        initialRouteName="ViewHome"
-        tabBar={props => <BottomTabBar {...props} />}
-    >
-        <Screen name='ViewHome' component={Home}/>
-        <Screen name='ViewFavoris' component={FavObjects}/>
-        <Screen name='ViewMyObject' component={MyObject}/>
-    </Navigator>
-);
+function RootStack() {
+    return (
+        <NavigationContainer>
+            <TabNavigation.Navigator
+                tabBarOptions={{
+                    activeTintColor: Colors.mainGreen,
+                }}>
+                <TabNavigation.Screen
+                    name="Recherche"
+                    component={searchStackScreens}
+                />
+                <TabNavigation.Screen
+                    name="Favoris"
+                    component={favStackScreens}
+                />
+            </TabNavigation.Navigator>
+        </NavigationContainer>
+    );
+}
 
-const AppNavigator = () => (
-    <NavigationContainer>
-        <TabNavigator/>
-    </NavigationContainer>
-);
-
-export default AppNavigator;
+export default RootStack;

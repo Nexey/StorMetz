@@ -9,7 +9,7 @@ import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import {PersistGate} from 'redux-persist/integration/react';
 
 import { Store, Persistor } from './src/store/config';
-import AppNavigator from "./src/navigation/NavigationBis";
+import AppNavigator from "./src/navigation/Navigation";
 import {FontAwesome5IconsPack} from "./src/helpers/fontawesome5-icons";
 import {Provider} from "react-redux";
 

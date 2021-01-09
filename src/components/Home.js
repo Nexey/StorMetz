@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Icon, Layout, List, Text, TopNavigation} from '@ui-kitten/components';
-import {StyleSheet, SafeAreaView, TextInput} from 'react-native';
+import {StyleSheet, SafeAreaView, TextInput, ActivityIndicator} from 'react-native';
 import MeteoInfoListItem from "./MeteoInfoListItem";
-import fakeObjects from "../helpers/FakeObjects";
 import {connect} from 'react-redux';
 import * as Location from "expo-location";
 import {getWeatherByCityName, getWeatherByLatLong} from "../api/OpenWeatherMap";
+import DisplayError from "./DisplayError";
 
 
 const Home = ({navigation, favMeteoInfos}) => {
@@ -115,14 +115,22 @@ const Home = ({navigation, favMeteoInfos}) => {
                     accessoryLeft={MapIcon}
                 >Me localiser</Button>
             </Layout>
+            {isError ?
+                (<DisplayError message='Impossible de récupérer les données météorologiques' />) :
+                (isLoading ?
+                    (<Layout style={styles.containerLoading}>
+                        <ActivityIndicator size="large" color="#0000ff" />
+                    </Layout>) :
             <List
                 data={meteoInfos}
                 extraData={favMeteoInfos}
                 renderItem={renderItem}
             />
+                )
+            }
         </SafeAreaView>
     );
-};
+}
 
 const mapStateToProps = (state) => {
     return {
