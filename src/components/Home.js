@@ -27,20 +27,7 @@ const Home = ({navigation, favMeteoInfos}) => {
         (async () => {
             if (location !== undefined) {
                 if (location.length !== 0) {
-                    try {
-                        const openWeatherData = await getWeatherByLatLong(location.coords.latitude, location.coords.longitude);
-                        await setMeteoInfos([]);
-                        if (openWeatherData === undefined) {
-                            console.log("Nothing retrieved");
-                        }
-                        else {
-                            await setMeteoInfos(meteoInfos => [...meteoInfos, openWeatherData.data]);
-                            setIsLoading(false);
-                        }
-                    } catch (error) {
-                        console.log(error.message);
-                        setIsError(true);
-                    }
+                    await requestWeather(getWeatherByLatLong, location.coords.latitude, location.coords.longitude);
                     setIsLoading(false);
                 }
             }
@@ -58,27 +45,17 @@ const Home = ({navigation, favMeteoInfos}) => {
         return await Location.getCurrentPositionAsync({});
     }
 
-
-    /*
-    const foo = (test) => {
-        return (test + "Hello");
-    }
-
-    const bar = (FUNCTION_AS_PARAMETER, test) => {
-        return FUNCTION_AS_PARAMETER(test);
-    }
-
-    console.log(bar(foo, "Goodbye"));
-    //*/
-
-    const requestWeather = async(functionToCall, info) => {
+    const requestWeather = async(functionToCall, param1 = '', param2 = '') => {
         try {
-            const openWeatherData = await functionToCall(info);
+            const openWeatherData = await functionToCall(param1, param2);
             await setMeteoInfos([]);
             if (openWeatherData===undefined)
                 console.log("Nothing retrieved");
             else {
-                let sortedData = "list" in openWeatherData["data"] ? openWeatherData["data"]["list"]:openWeatherData["data"];
+                let sortedData = [];
+                "list" in openWeatherData["data"] ?
+                    sortedData = openWeatherData["data"]["list"] :
+                    sortedData.push(openWeatherData["data"]);
                 await setMeteoInfos(meteoInfos => [...meteoInfos, ...sortedData]);
             }
         } catch (error) {
