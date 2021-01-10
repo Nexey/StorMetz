@@ -6,7 +6,6 @@ import {getWeatherOneCall} from "../api/OpenWeatherMap";
 import Flag from "react-native-flags";
 
 const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
-    console.log(route.params.meteoInfoData.sys.country);
 
     // On pourrait définir les actions dans un fichier à part
     const saveObject = async () => {

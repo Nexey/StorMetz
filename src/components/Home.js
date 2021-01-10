@@ -6,8 +6,8 @@ import {connect} from 'react-redux';
 import * as Location from "expo-location";
 import {getWeatherByCityName, getWeatherByLatLong} from "../api/OpenWeatherMap";
 import DisplayError from "./DisplayError";
-
 import fakeMeteo from "../helpers/fakeMeteo";
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 
 const Home = ({navigation, favMeteoInfos}) => {
@@ -50,7 +50,6 @@ const Home = ({navigation, favMeteoInfos}) => {
     }
 
     const requestWeather = async(functionToCall, ...arr) => {
-        await setMeteoInfos([]);
         await setIsError(false);
         await setIsLoading(true);
         try {
@@ -60,6 +59,7 @@ const Home = ({navigation, favMeteoInfos}) => {
                 setIsError(true);
             }
             else {
+                await setMeteoInfos([]);
                 "list" in openWeatherData["data"] ?
                     await setMeteoInfos(openWeatherData["data"]["list"]) :
                     await setMeteoInfos(meteoInfos => [...meteoInfos, openWeatherData["data"]]);
@@ -120,16 +120,24 @@ const Home = ({navigation, favMeteoInfos}) => {
                         <TextInput style={styles.inputRestaurantName} placeholder="Ville"
                                    onChangeText={(text) => setCityName(text)}/>
                     </Layout>
-                    <Button
-                        title="Rechercher"
+                    <FontAwesome5.Button
+                        style={{
+                            justifyContent: 'center',
+                            alignItems: 'center'}}
+                        name={'search'}
                         onPress={requestWeatherByCityName}
-                        accessoryLeft={SearchIcon}
-                    >Rechercher</Button>
-                    <Button
-                        title="Localiser"
+                    >
+                        Rechercher
+                    </FontAwesome5.Button>
+                    <FontAwesome5.Button
+                        style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',}}
+                        name={'map-marker-alt'}
                         onPress={requestWeatherByLatLon}
-                        accessoryLeft={MapIcon}
-                    >Me localiser</Button>
+                    >
+                        Me localiser
+                    </FontAwesome5.Button>
                 </Layout>
                 {isError ?
                     (<DisplayError message={error}/>) :
