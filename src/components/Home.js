@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Icon, Layout, List, Text, TopNavigation} from '@ui-kitten/components';
-import {StyleSheet, SafeAreaView, TextInput, ActivityIndicator} from 'react-native';
+import {Button, Icon, Layout, List, TopNavigation} from '@ui-kitten/components';
+import {StyleSheet, SafeAreaView, TextInput, ActivityIndicator, Image} from 'react-native';
 import MeteoInfoListItem from "./MeteoInfoListItem";
 import {connect} from 'react-redux';
 import * as Location from "expo-location";
@@ -97,40 +97,44 @@ const Home = ({navigation, favMeteoInfos}) => {
     const renderItem = ({item}) => {
         return (<MeteoInfoListItem meteoInfoData={item} onClick={navigateToMeteoInfoDetails} isFav={amIaFavMeteoInfo(item.id)} />);
     }
-
-    return (
-        <SafeAreaView style={styles.container}>
-            <TopNavigation title='MyApp' alignment='center'/>
-            <Layout style={styles.searchContainer}>
+    try {
+        return (
+            <SafeAreaView style={styles.container}>
+                <TopNavigation title='MyApp' alignment='center'/>
                 <Layout style={styles.searchContainer}>
-                    <TextInput style={styles.inputRestaurantName} placeholder="Ville" onChangeText={(text) => setCityName(text)}/>
+                    <Layout style={styles.searchContainer}>
+                        <TextInput style={styles.inputRestaurantName} placeholder="Ville"
+                                   onChangeText={(text) => setCityName(text)}/>
+                    </Layout>
+                    <Button
+                        title="Rechercher"
+                        onPress={requestWeatherByCityName}
+                        accessoryLeft={SearchIcon}
+                    >Rechercher</Button>
+                    <Button
+                        title="Localiser"
+                        onPress={requestWeatherByLatLon}
+                        accessoryLeft={MapIcon}
+                    >Me localiser</Button>
                 </Layout>
-                <Button
-                    title="Rechercher"
-                    onPress={requestWeatherByCityName}
-                    accessoryLeft={SearchIcon}
-                >Rechercher</Button>
-                <Button
-                    title="Localiser"
-                    onPress={requestWeatherByLatLon}
-                    accessoryLeft={MapIcon}
-                >Me localiser</Button>
-            </Layout>
-            {isError ?
-                (<DisplayError message={error} />) :
-                (isLoading ?
-                    (<Layout style={styles.containerLoading}>
-                        <ActivityIndicator size="large" color="#0000ff" />
-                    </Layout>) :
-            <List
-                data={meteoInfos}
-                extraData={favMeteoInfos}
-                renderItem={renderItem}
-            />
-                )
-            }
-        </SafeAreaView>
-    );
+                {isError ?
+                    (<DisplayError message={error}/>) :
+                    (isLoading ?
+                            (<Layout style={styles.containerLoading}>
+                                <ActivityIndicator size="large" color="#0000ff"/>
+                            </Layout>) :
+                            <List
+                                data={meteoInfos}
+                                extraData={favMeteoInfos}
+                                renderItem={renderItem}
+                            />
+                    )
+                }
+            </SafeAreaView>
+        );
+    } catch(error) {
+        console.log(error);
+    }
 }
 
 const mapStateToProps = (state) => {

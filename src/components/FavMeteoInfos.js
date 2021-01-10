@@ -7,7 +7,6 @@ import {Layout, List} from "@ui-kitten/components";
 import {getWeatherByCityID, getWeatherByCityName} from "../api/OpenWeatherMap";
 
 const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
-
     const [meteoInfos, setMeteoInfos] = useState([]);
 
     const navigateToObjectDetails = async(meteoInfoData) => {

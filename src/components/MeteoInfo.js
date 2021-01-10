@@ -1,9 +1,11 @@
 import React, {useEffect} from 'react';
 import {Button, Icon, Layout, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
-import {SafeAreaView, StyleSheet } from 'react-native';
+import {Image, SafeAreaView, StyleSheet} from 'react-native';
 import { connect } from 'react-redux';
+import {getWeatherOneCall} from "../api/OpenWeatherMap";
 
 const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
+    console.log(route.params.meteoInfoData.main);
 
     // On pourrait définir les actions dans un fichier à part
     const saveObject = async () => {
@@ -43,6 +45,10 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
         );
     }
 
+    const test = async() => {
+        const response = await getWeatherOneCall(route.params.meteoInfoData.coord);
+    }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <TopNavigation title={route.params.meteoInfoData.name} alignment='center'/>
@@ -54,6 +60,17 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                         </Text>
                         <Text category='h2' status="info">
                             ID : {route.params.meteoInfoData.id}
+                        </Text>
+                    </Layout>
+                    <Layout>
+                        <Image
+                            style={styles.tinyLogo}
+                            source={{
+                                uri: `http://openweathermap.org/img/wn/${route.params.meteoInfoData.weather[0].icon}.png`,
+                            }}
+                        />
+                        <Text>
+                            {route.params.meteoInfoData.weather[0].description}
                         </Text>
                     </Layout>
                     <Layout>
@@ -161,5 +178,9 @@ const styles = StyleSheet.create({
     },
     stat: {
         marginLeft: 4,
+    },
+    tinyLogo: {
+        width: 64,
+        height: 64,
     },
 });

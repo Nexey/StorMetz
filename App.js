@@ -17,7 +17,7 @@ export default function App() {
     return (
         <>
             <IconRegistry icons={[EvaIconsPack, FeatherIconsPack, MaterialIconsPack, FontAwesome5IconsPack]} />
-            <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
+            <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
                 <Provider store={Store} >
                     <PersistGate loading={null} persistor={Persistor}>
                         <AppNavigator/>
