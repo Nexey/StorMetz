@@ -7,6 +7,7 @@ import Home from "../components/Home";
 import {NavigationContainer} from "@react-navigation/native";
 import MeteoInfo from "../components/MeteoInfo";
 import FavMeteoInfos from "../components/FavMeteoInfos";
+import AppLoading from "../components/AppLoading";
 
 const SearchNavigation = createStackNavigator();
 const FavNavigation = createStackNavigator();
@@ -22,6 +23,11 @@ function searchStackScreens() {
                 name="ViewSearch"
                 component={Home}
                 options={{ title: 'Home' }}
+            />
+            <SearchNavigation.Screen
+                name="ViewAppLoading"
+                component={AppLoading}
+                options={{ title: 'AppLOading' }}
             />
             <SearchNavigation.Screen
                 name="ViewMeteoInfo"

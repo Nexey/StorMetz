@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Icon, Layout, List, TopNavigation} from '@ui-kitten/components';
-import {StyleSheet, SafeAreaView, TextInput, ActivityIndicator, Image} from 'react-native';
+import {StyleSheet, SafeAreaView, TextInput, ActivityIndicator, FlatList, RefreshControl} from 'react-native';
 import MeteoInfoListItem from "./MeteoInfoListItem";
 import {connect} from 'react-redux';
 import * as Location from "expo-location";
@@ -16,6 +16,7 @@ const Home = ({navigation, favMeteoInfos}) => {
     const [cityName, setCityName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [location, setLocation] = useState([]);
+    const [lastCall, setLastCall] = useState('');
 
     const SearchIcon = (props) => (
         <Icon {...props} name='search-outline' />
@@ -44,12 +45,11 @@ const Home = ({navigation, favMeteoInfos}) => {
                 return;
             }
         }
-        setIsLoading(false);
         return await Location.getCurrentPositionAsync({});
     }
 
     const requestWeather = async(functionToCall, ...arr) => {
-        setMeteoInfos([]);
+        await setMeteoInfos([]);
         setIsLoading(true);
         setIsError(false);
         //*
@@ -73,6 +73,7 @@ const Home = ({navigation, favMeteoInfos}) => {
     }
 
     const requestWeatherByLatLon = async() => {
+        setLastCall("coords");
         try {
             let response = await requestLocation();
             await setLocation(response);
@@ -83,6 +84,7 @@ const Home = ({navigation, favMeteoInfos}) => {
     }
 
     const requestWeatherByCityName = async() => {
+        setLastCall("name");
         await requestWeather(getWeatherByCityName, {"cityName":cityName});
     };
 
@@ -92,6 +94,19 @@ const Home = ({navigation, favMeteoInfos}) => {
 
     const amIaFavMeteoInfo = (meteoInfoID) => {
         return (favMeteoInfos.findIndex(i => i === meteoInfoID) !== -1);
+    };
+
+    const onRefresh = async() => {
+        switch(lastCall) {
+            case 'name':
+                await requestWeatherByCityName();
+                break;
+            case 'coords':
+                await requestWeatherByLatLon();
+                break;
+            default:
+                break;
+        }
     };
 
     const renderItem = ({item}) => {
@@ -123,10 +138,14 @@ const Home = ({navigation, favMeteoInfos}) => {
                             (<Layout style={styles.containerLoading}>
                                 <ActivityIndicator size="large" color="#0000ff"/>
                             </Layout>) :
-                            <List
+                            <FlatList
                                 data={meteoInfos}
+                                keyExtractor={(item) => item.id.toString()}
                                 extraData={favMeteoInfos}
                                 renderItem={renderItem}
+                                refreshControl={
+                                    <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+                                }
                             />
                     )
                 }

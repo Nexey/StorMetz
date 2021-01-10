@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import {StyleSheet, SafeAreaView} from 'react-native';
+import {StyleSheet, SafeAreaView, ActivityIndicator, FlatList} from 'react-native';
 import {connect} from 'react-redux';
 
 import MeteoInfoListItem from './MeteoInfoListItem';
 import {Layout, List} from "@ui-kitten/components";
 import {getWeatherByCityID, getWeatherByCityName} from "../api/OpenWeatherMap";
+import DisplayError from "./DisplayError";
 
 const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
     const [meteoInfos, setMeteoInfos] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [isError, setIsError] = useState(false);
 
     const navigateToObjectDetails = async(meteoInfoData) => {
         navigation.navigate("ViewMeteoInfo", {meteoInfoData});
@@ -31,37 +35,26 @@ const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
             else {
                 await setMeteoInfos(meteoInfos => [...meteoInfos, openWeatherData.data]);
             }
-            //await setMeteoInfos(openWeatherData.data);
         } catch (error) {
-            console.log("erreur ptdr");
+            setError("Erreur lors de la récupération des données d'un favori.")
+            setIsError(true);
         }
-        return [];
     }
 
     const refreshFavMeteoInfos = async () => {
-        let objects = [];
+        await setIsError(false);
+        await setIsLoading(true);
         await setMeteoInfos([]);
         try {
             for (const id of favMeteoInfos) {
-                objects.push(getObjectById(id));
+                await getObjectById(id);
             }
-            await setMeteoInfos(objects);
         } catch (error) {
-            console.log("erreur xD");
+            setError("Les favoris n'ont pas pu être récupérés.")
+            setIsError(true);
         }
+        await setIsLoading(false);
     };
-    /*
-    const navigateToRestaurantDetails = (restaurantID) => {
-        navigation.navigate("ViewRestaurant", { restaurantID });
-    };
-
-    const amIaFavRestaurant = (restaurantID) => {
-        if (favRestaurants.findIndex(i => i === restaurantID) !== -1) {
-            return true;
-        }
-        return false;
-    };
-    */
 
     const renderItem = ({item}) => {
         return (<MeteoInfoListItem meteoInfoData={item} onClick={navigateToObjectDetails} isFav={amIaFavMeteoINfo(item.id)} />);
@@ -69,11 +62,19 @@ const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
 
     return (
         <Layout style={styles.container}>
-            <List
-                data={meteoInfos}
-                extraData={favMeteoInfos}
-                renderItem={renderItem}
-            />
+            {isError ?
+                (<DisplayError message={error}/>) :
+                (isLoading ?
+                    (<Layout style={styles.containerLoading}>
+                        <ActivityIndicator size="large" color="#0000ff"/>
+                    </Layout>) :
+                    <List
+                        data={meteoInfos}
+                        extraData={favMeteoInfos}
+                        renderItem={renderItem}
+                    />
+                )
+            }
         </Layout>
     );
 };

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import {getWeatherOneCall} from "../api/OpenWeatherMap";
 
 const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
-    console.log(route.params.meteoInfoData.main);
+    //console.log(route.params.meteoInfoData.main);
 
     // On pourrait définir les actions dans un fichier à part
     const saveObject = async () => {
@@ -66,7 +66,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                         <Image
                             style={styles.tinyLogo}
                             source={{
-                                uri: `http://openweathermap.org/img/wn/${route.params.meteoInfoData.weather[0].icon}.png`,
+                                uri: `http://openweathermap.org/img/wn/${route.params.meteoInfoData.weather[0].icon}@4x.png`,
                             }}
                         />
                         <Text>

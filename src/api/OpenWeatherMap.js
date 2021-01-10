@@ -16,6 +16,8 @@ const callAPIReverse = axios.create({
     timeout: 1000,
 });
 
+let params = {"lat":"", "lon":"","cityID":"","cityName":""};
+
 async function callOpenWeatherMapAPIReverse(endpoint) {
     try {
         const res = await callAPIReverse.get(endpoint + url_end);
@@ -34,7 +36,6 @@ async function callOpenWeatherMapAPI(endpoint) {
 }
 
 export async function getLocationNameByLatLon(...arr) {
-    let params = {"lat":"", "lon":""};
     arr.forEach(arg => {
         if ("lat" in arg)
             params.lat = arg.lat;
@@ -46,7 +47,6 @@ export async function getLocationNameByLatLon(...arr) {
 }
 
 export async function getWeatherByLatLong(...arr) {
-    let params = {"lat":"", "lon":""};
     arr.forEach(arg => {
         if ("lat" in arg)
             params.lat = arg.lat;
@@ -58,7 +58,6 @@ export async function getWeatherByLatLong(...arr) {
 }
 
 export async function getWeatherByCityName(...arr) {
-    let params = {"cityName":""};
     arr.forEach(arg => {
         if ("cityName" in arg)
             params.cityName = arg.cityName;
@@ -68,8 +67,6 @@ export async function getWeatherByCityName(...arr) {
 };
 
 export async function getWeatherOneCall(...arr) {
-    console.log(arr);
-    let params = {"lat":"", "lon":""};
     arr.forEach(arg => {
         if ("lat" in arg)
             params.lat = arg.lat;
@@ -81,7 +78,6 @@ export async function getWeatherOneCall(...arr) {
 }
 
 export async function getWeatherByCityID(...arr) {
-    let params = {"cityID":""};
     arr.forEach(arg => {
         if ("cityID" in arg)
             params.cityID = arg.cityID;
