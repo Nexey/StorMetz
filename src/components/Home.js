@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import * as Location from "expo-location";
 import {getWeatherByCityName, getWeatherByLatLong} from "../api/OpenWeatherMap";
 import DisplayError from "./DisplayError";
+import fakeMeteo from "../helpers/fakeMeteo";
 
 
 const Home = ({navigation, favMeteoInfos}) => {
@@ -28,8 +29,7 @@ const Home = ({navigation, favMeteoInfos}) => {
         (async () => {
             if (location !== undefined) {
                 if (location.length !== 0) {
-                    await requestWeather(getWeatherByLatLong, location.coords.latitude, location.coords.longitude);
-                    setIsLoading(false);
+                    await requestWeather(getWeatherByLatLong, {"lat":location.coords.latitude}, {"lon":location.coords.longitude});
                 }
             }
         })();
@@ -48,12 +48,13 @@ const Home = ({navigation, favMeteoInfos}) => {
         return await Location.getCurrentPositionAsync({});
     }
 
-    const requestWeather = async(functionToCall, param1 = '', param2 = '') => {
+    const requestWeather = async(functionToCall, ...arr) => {
+        setMeteoInfos([]);
         setIsLoading(true);
         setIsError(false);
-        await setMeteoInfos([]);
+        //*
         try {
-            const openWeatherData = await functionToCall(param1, param2);
+            const openWeatherData = await functionToCall(...arr);
             if (openWeatherData===undefined) {
                 setError("Aucun résultat n'a été trouvé.");
                 setIsError(true);
@@ -67,6 +68,7 @@ const Home = ({navigation, favMeteoInfos}) => {
             setError(error.message);
             setIsError(true);
         }
+        //*/
         setIsLoading(false);
     }
 
@@ -81,7 +83,7 @@ const Home = ({navigation, favMeteoInfos}) => {
     }
 
     const requestWeatherByCityName = async() => {
-        await requestWeather(getWeatherByCityName, cityName);
+        await requestWeather(getWeatherByCityName, {"cityName":cityName});
     };
 
     const navigateToMeteoInfoDetails = async(meteoInfoData) => {

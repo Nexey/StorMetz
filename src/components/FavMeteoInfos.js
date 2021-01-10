@@ -26,7 +26,7 @@ const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
 
     const getObjectById = async(id) => {
         try {
-            const openWeatherData = await getWeatherByCityID(id);
+            const openWeatherData = await getWeatherByCityID({"cityID":id});
             if (openWeatherData===undefined)
                 console.log("Nothing retrieved");
             else {

@@ -31,22 +31,59 @@ async function callOpenWeatherMapAPI(endpoint) {
     }
 }
 
-export async function getLocationNameByLatLon(lat, lon) {
-    return await callOpenWeatherMapAPIReverse(`/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${API_KEY}`);
+export async function getLocationNameByLatLon(...arr) {
+    let params = {"lat":"", "lon":""};
+    arr.forEach(arg => {
+        if ("lat" in arg)
+            params.lat = arg.lat;
+        if ("lon" in arg)
+            params.lon = arg.lon
+    });
+
+    return await callOpenWeatherMapAPIReverse(`/reverse?lat=${params.lat}&lon=${params.lon}&limit=1&appid=${API_KEY}`);
 }
 
-export async function getWeatherByLatLong(lat, lon) {
-    return await callOpenWeatherMapAPI(`/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`);
+export async function getWeatherByLatLong(...arr) {
+    let params = {"lat":"", "lon":""};
+    arr.forEach(arg => {
+        if ("lat" in arg)
+            params.lat = arg.lat;
+        if ("lon" in arg)
+            params.lon = arg.lon
+    });
+
+    return await callOpenWeatherMapAPI(`/weather?lat=${params.lat}&lon=${params.lon}&units=metric&appid=${API_KEY}`);
 }
 
-export async function getWeatherByCityName(cityName = '', stateCode ='', countryCode = '') {
-    return await callOpenWeatherMapAPI(`/find?q=${cityName}&units=metric&appid=${API_KEY}`);
+export async function getWeatherByCityName(...arr) {
+    let params = {"cityName":""};
+    arr.forEach(arg => {
+        if ("cityName" in arg)
+            params.cityName = arg.cityName;
+    });
+
+    return await callOpenWeatherMapAPI(`/find?q=${params.cityName}&units=metric&appid=${API_KEY}`);
 };
 
-export async function getWeatherOneCall(lat, lon) {
-    return await callOpenWeatherMapAPI(`/onecall?lat=${lat}&units=metric&lon=${lon}&appid=${API_KEY}`);
+export async function getWeatherOneCall(...arr) {
+    let params = {"lat":"", "lon":""};
+    arr.forEach(arg => {
+        if ("lat" in arg)
+            params.lat = arg.lat;
+        if ("lon" in arg)
+            params.lon = arg.lon
+    });
+
+    return await callOpenWeatherMapAPI(`/onecall?lat=${params.lat}&units=metric&lon=${params.lon}&appid=${API_KEY}`);
 }
 
-export async function getWeatherByCityID(cityID = '') {
-    return await callOpenWeatherMapAPI(`/weather?id=${cityID}&appid=${API_KEY}`);
+export async function getWeatherByCityID(...arr) {
+    console.log(arr);
+    let params = {"cityID":""};
+    arr.forEach(arg => {
+        if ("cityID" in arg)
+            params.cityID = arg.cityID;
+    });
+
+    return await callOpenWeatherMapAPI(`/weather?id=${params.cityID}&appid=${API_KEY}`);
 };
