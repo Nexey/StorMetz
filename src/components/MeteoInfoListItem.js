@@ -1,6 +1,8 @@
 import React from 'react';
 import {Layout, Text} from '@ui-kitten/components';
 import { StyleSheet, TouchableOpacity } from 'react-native';
+import ReactCountryFlag from "react-country-flag";
+import Flag from "react-native-flags";
 
 const MeteoInfoListItem = ({onClick, meteoInfoData, meteoInfoData : {main, id}, isFav = false}) => {
     return (
@@ -8,9 +10,15 @@ const MeteoInfoListItem = ({onClick, meteoInfoData, meteoInfoData : {main, id}, 
             <Layout style={styles.container}>
                 <Layout style={styles.informationContainer}>
                     <Layout style={styles.title}>
-                        <Text category='h1' status="info">
-                            {meteoInfoData.name}
-                        </Text>
+                        <Layout style={styles.statContainer}>
+                            <Flag
+                                code={meteoInfoData.sys.country}
+                                size={32}
+                            />
+                            <Text category='h1' status="info">
+                                {meteoInfoData.name}
+                            </Text>
+                        </Layout>
                     </Layout>
                 </Layout>
             </Layout>

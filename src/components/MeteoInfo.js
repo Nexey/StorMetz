@@ -3,9 +3,10 @@ import {Button, Icon, Layout, Text, TopNavigation, TopNavigationAction} from '@u
 import {Image, SafeAreaView, StyleSheet} from 'react-native';
 import { connect } from 'react-redux';
 import {getWeatherOneCall} from "../api/OpenWeatherMap";
+import Flag from "react-native-flags";
 
 const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
-    //console.log(route.params.meteoInfoData.main);
+    console.log(route.params.meteoInfoData.sys.country);
 
     // On pourrait définir les actions dans un fichier à part
     const saveObject = async () => {
@@ -55,12 +56,15 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
             <Layout style={styles.container}>
                 <Layout style={styles.informationContainer}>
                     <Layout style={styles.title}>
-                        <Text category='h1'>
-                            Nom : {route.params.meteoInfoData.name}
-                        </Text>
-                        <Text category='h2' status="info">
-                            ID : {route.params.meteoInfoData.id}
-                        </Text>
+                        <Layout style={styles.statContainer}>
+                            <Flag
+                                code={route.params.meteoInfoData.sys.country}
+                                size={32}
+                            />
+                            <Text category='h1' status="info">
+                                {route.params.meteoInfoData.name}
+                            </Text>
+                        </Layout>
                     </Layout>
                     <Layout>
                         <Image

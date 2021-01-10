@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import * as Location from "expo-location";
 import {getWeatherByCityName, getWeatherByLatLong} from "../api/OpenWeatherMap";
 import DisplayError from "./DisplayError";
+
 import fakeMeteo from "../helpers/fakeMeteo";
 
 
@@ -50,9 +51,8 @@ const Home = ({navigation, favMeteoInfos}) => {
 
     const requestWeather = async(functionToCall, ...arr) => {
         await setMeteoInfos([]);
-        setIsLoading(true);
-        setIsError(false);
-        //*
+        await setIsError(false);
+        await setIsLoading(true);
         try {
             const openWeatherData = await functionToCall(...arr);
             if (openWeatherData===undefined) {
@@ -68,7 +68,6 @@ const Home = ({navigation, favMeteoInfos}) => {
             setError(error.message);
             setIsError(true);
         }
-        //*/
         setIsLoading(false);
     }
 
