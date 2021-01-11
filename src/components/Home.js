@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Icon, Layout, List, TopNavigation} from '@ui-kitten/components';
-import {StyleSheet, SafeAreaView, TextInput, ActivityIndicator, FlatList, RefreshControl} from 'react-native';
+import {StyleSheet, SafeAreaView, TextInput, ActivityIndicator, RefreshControl} from 'react-native';
 import MeteoInfoListItem from "./MeteoInfoListItem";
 import {connect} from 'react-redux';
 import * as Location from "expo-location";
@@ -8,9 +8,14 @@ import {getWeatherByCityName, getWeatherByLatLong} from "../api/OpenWeatherMap";
 import DisplayError from "./DisplayError";
 import fakeMeteo from "../helpers/fakeMeteo";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {ThemeContext} from "../definitions/theme-context";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 
 const Home = ({navigation, favMeteoInfos}) => {
+
+    const themeContext = React.useContext(ThemeContext);
+
     const [meteoInfos, setMeteoInfos] = useState([]);
     const [isError, setIsError] = useState(false);
     const [error, setError] = useState('');
@@ -23,7 +28,15 @@ const Home = ({navigation, favMeteoInfos}) => {
         <Icon {...props} name='search-outline' />
     );
 
-    const MapIcon = (props) => (
+    const BookmarkIcon = (props) => (
+        <Icon {...props} name='bookmark' pack="materialcommunity" />
+    );
+
+    const BookmarkOutlineIcon = (props) => (
+        <Icon {...props} name='bookmark-outline' pack="materialcommunity" />
+    );
+
+    const LocationPinIcon = (props) => (
         <Icon {...props} name='location-pin' pack="material"/>
     );
 
@@ -108,6 +121,7 @@ const Home = ({navigation, favMeteoInfos}) => {
         }
     };
 
+
     const renderItem = ({item}) => {
         return (<MeteoInfoListItem meteoInfoData={item} onClick={navigateToMeteoInfoDetails} isFav={amIaFavMeteoInfo(item.id)} />);
     }
@@ -115,21 +129,24 @@ const Home = ({navigation, favMeteoInfos}) => {
         return (
             <SafeAreaView style={styles.container}>
                 <TopNavigation title='MyApp' alignment='center'/>
+                <Button onPress={themeContext.toggleTheme}>TOGGLE THEME</Button>
+
                 <Layout style={styles.searchContainer}>
                     <Layout style={styles.searchContainer}>
-                        <TextInput style={styles.inputRestaurantName} placeholder="Ville"
-                                   onChangeText={(text) => setCityName(text)}/>
+                        <TextInput style={styles.inputRestaurantName} placeholder="Ville" onChangeText={(text) => setCityName(text)}/>
                     </Layout>
-                    <FontAwesome5.Button
+                    <Button
+                        accessoryLeft={SearchIcon}
                         style={{
                             justifyContent: 'center',
-                            alignItems: 'center'}}
-                        name={'search'}
+                            alignItems: 'center',}}
+                        name={'map-marker-alt'}
                         onPress={requestWeatherByCityName}
                     >
                         Rechercher
-                    </FontAwesome5.Button>
-                    <FontAwesome5.Button
+                    </Button>
+                    <Button
+                        accessoryLeft={LocationPinIcon}
                         style={{
                             justifyContent: 'center',
                             alignItems: 'center',}}
@@ -137,7 +154,7 @@ const Home = ({navigation, favMeteoInfos}) => {
                         onPress={requestWeatherByLatLon}
                     >
                         Me localiser
-                    </FontAwesome5.Button>
+                    </Button>
                 </Layout>
                 {isError ?
                     (<DisplayError message={error}/>) :
@@ -145,7 +162,7 @@ const Home = ({navigation, favMeteoInfos}) => {
                             (<Layout style={styles.containerLoading}>
                                 <ActivityIndicator size="large" color="#0000ff"/>
                             </Layout>) :
-                            <FlatList
+                            <List
                                 data={meteoInfos}
                                 keyExtractor={(item) => item.id.toString()}
                                 extraData={favMeteoInfos}
@@ -179,5 +196,13 @@ const styles = StyleSheet.create({
     },
     searchContainer: {
         marginBottom: 16,
+    },
+    tinyIcon: {
+        height:32,
+        width:32,
+        tintColor:'#32988c'
+    },
+    button: {
+        margin: 2,
     },
 });

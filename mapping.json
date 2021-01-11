@@ -1,0 +1,26 @@
+{
+  "components": {
+    "Button": {
+      "meta": {},
+      "appearances": {
+        "outline": {
+          "default": true
+        },
+        "filled": {
+          "default": false,
+          "ghost": {
+            "default": true
+          },
+          "mapping": {},
+          "variantGroups": {
+            "status": {
+              "primary": {
+                "backgroundColor": "rgba(255, 100, 100, 0.5)"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

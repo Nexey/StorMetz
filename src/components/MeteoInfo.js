@@ -26,28 +26,38 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
         if (favMeteoInfos.findIndex(i => i === route.params.meteoInfoData.id) !== -1) {
             // L'object est sauvegardé
             return (
-                <Button
-                    title='Retirer des favoris'
-                    onPress={unsaveObject}
-                >
-                    Retirer des favoris
-                </Button>
+                <Button style={styles.button}
+                        onPress={unsaveObject}
+                        title='Retirer des favoris'
+                        appearance='ghost'
+                        status='danger'
+                        accessoryLeft={BookmarkIcon}
+                />
             );
         }
         // L'object n'est pas sauvegardé
         return (
-            <Button
-                title='Ajouter aux favoris'
-                onPress={saveObject}
-            >
-                Ajouter aux favoris
-            </Button>
+            <Button style={styles.button}
+                    onPress={saveObject}
+                    title='Ajouter aux favoris'
+                    appearance='ghost'
+                    status='danger'
+                    accessoryLeft={BookmarkOutlineIcon}
+            />
         );
     }
 
     const test = async() => {
         const response = await getWeatherOneCall(route.params.meteoInfoData.coord);
     }
+
+    const BookmarkIcon = (props) => (
+        <Icon {...props} name='bookmark' pack="materialcommunity" />
+    );
+
+    const BookmarkOutlineIcon = (props) => (
+        <Icon {...props} name='bookmark-outline' pack="materialcommunity" />
+    );
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -63,6 +73,9 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                             <Text category='h1' status="info">
                                 {route.params.meteoInfoData.name}
                             </Text>
+                            <Layout>
+                                {displaySaveObject()}
+                            </Layout>
                         </Layout>
                     </Layout>
                     <Layout>
@@ -73,11 +86,8 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                             }}
                         />
                         <Text>
-                            {route.params.meteoInfoData.weather[0].description}
+                            {route.params.meteoInfoData.weather[0].description.charAt(0).toUpperCase() + route.params.meteoInfoData.weather[0].description.slice(1)}
                         </Text>
-                    </Layout>
-                    <Layout>
-                        {displaySaveObject()}
                     </Layout>
                 </Layout>
             </Layout>
@@ -185,5 +195,8 @@ const styles = StyleSheet.create({
     tinyLogo: {
         width: 64,
         height: 64,
+    },
+    button: {
+        margin: 2,
     },
 });

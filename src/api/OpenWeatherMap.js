@@ -31,7 +31,7 @@ async function callOpenWeatherMapAPI(endpoint) {
         const res = await callAPI.get(endpoint + url_end);
         return res;
     } catch (err) {
-        console.log("API conection failed");
+        console.log(err.message + "\nAPI conection failed");
     }
 }
 

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Icon, Layout, List, TopNavigation} from '@ui-kitten/components';
 import {StyleSheet, SafeAreaView, TextInput} from 'react-native';
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 const AppLoading = () => {
     const SearchIcon = (props) => (
@@ -18,14 +19,22 @@ const AppLoading = () => {
                 <Layout style={styles.searchContainer}>
                     <TextInput style={styles.inputRestaurantName} placeholder="Ville" />
                 </Layout>
-                <Button
-                    title="Rechercher"
-                    accessoryLeft={SearchIcon}
-                >Rechercher</Button>
-                <Button
-                    title="Localiser"
-                    accessoryLeft={MapIcon}
-                >Me localiser</Button>
+                <FontAwesome5.Button
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center'}}
+                    name={'search'}
+                >
+                    Rechercher
+                </FontAwesome5.Button>
+                <FontAwesome5.Button
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',}}
+                    name={'map-marker-alt'}
+                >
+                    Me localiser
+                </FontAwesome5.Button>
             </Layout>
         </SafeAreaView>
     );

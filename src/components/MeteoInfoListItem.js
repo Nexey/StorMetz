@@ -1,6 +1,6 @@
 import React from 'react';
 import {Layout, Text} from '@ui-kitten/components';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import ReactCountryFlag from "react-country-flag";
 import Flag from "react-native-flags";
 
@@ -19,6 +19,15 @@ const MeteoInfoListItem = ({onClick, meteoInfoData, meteoInfoData : {main, id}, 
                                 {meteoInfoData.name}
                             </Text>
                         </Layout>
+                        <Image
+                            style={styles.tinyLogo}
+                            source={{
+                                uri: `http://openweathermap.org/img/wn/${meteoInfoData.weather[0].icon}@4x.png`,
+                            }}
+                        />
+                        <Text>
+                            {meteoInfoData.weather[0].description.charAt(0).toUpperCase() + meteoInfoData.weather[0].description.slice(1)}
+                        </Text>
                     </Layout>
                 </Layout>
             </Layout>
@@ -58,5 +67,9 @@ const styles = StyleSheet.create({
     },
     stat: {
         marginLeft: 4,
+    },
+    tinyLogo: {
+        width: 64,
+        height: 64,
     },
 });
