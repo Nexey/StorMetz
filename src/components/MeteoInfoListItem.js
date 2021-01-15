@@ -1,9 +1,18 @@
 import React from 'react';
 import {Layout, Text} from '@ui-kitten/components';
 import {Image, StyleSheet, TouchableOpacity} from 'react-native';
-import ReactCountryFlag from "react-country-flag";
 import Flag from "react-native-flags";
-
+/*
+                        <Image
+                            style={styles.tinyLogo}
+                            source={{
+                                uri: `http://openweathermap.org/img/wn/${meteoInfoData.weather[0].icon}@4x.png`,
+                            }}
+                        />
+                        <Text>
+                            {meteoInfoData.weather[0].description.charAt(0).toUpperCase() + meteoInfoData.weather[0].description.slice(1)}
+                        </Text>
+*/
 const MeteoInfoListItem = ({onClick, meteoInfoData, meteoInfoData : {main, id}, isFav = false}) => {
     return (
         <TouchableOpacity onPress={() => (onClick(meteoInfoData))}>
@@ -19,15 +28,6 @@ const MeteoInfoListItem = ({onClick, meteoInfoData, meteoInfoData : {main, id}, 
                                 {meteoInfoData.name}
                             </Text>
                         </Layout>
-                        <Image
-                            style={styles.tinyLogo}
-                            source={{
-                                uri: `http://openweathermap.org/img/wn/${meteoInfoData.weather[0].icon}@4x.png`,
-                            }}
-                        />
-                        <Text>
-                            {meteoInfoData.weather[0].description.charAt(0).toUpperCase() + meteoInfoData.weather[0].description.slice(1)}
-                        </Text>
                     </Layout>
                 </Layout>
             </Layout>

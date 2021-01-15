@@ -26,6 +26,7 @@ async function callOpenWeatherMapAPIReverse(endpoint) {
         console.log("API conection failed");
     }
 }
+
 async function callOpenWeatherMapAPI(endpoint) {
     try {
         const res = await callAPI.get(endpoint + url_end);

@@ -3,31 +3,21 @@ import {Button, Icon, Layout, Text, TopNavigation, TopNavigationAction} from '@u
 import {Image, SafeAreaView, StyleSheet} from 'react-native';
 import { connect } from 'react-redux';
 import {getWeatherOneCall} from "../api/OpenWeatherMap";
+import {saveObject, unsaveObject, mapStateToProps} from "../helpers/favActionHelpers";
 import Flag from "react-native-flags";
 
-const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
-
-    // On pourrait définir les actions dans un fichier à part
-    const saveObject = async () => {
-        const action = { type: 'SAVE_OBJECT', value: route.params.meteoInfoData.id };
-        dispatch(action);
-    }
-
-    const unsaveObject = async () => {
-        const action = { type: 'UNSAVE_OBJECT', value: route.params.meteoInfoData.id };
-        dispatch(action);
-    }
+const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}) => {
 
     const navigateBack = () => {
         navigation.goBack();
     };
 
-    const displaySaveObject = () => {
-        if (favMeteoInfos.findIndex(i => i === route.params.meteoInfoData.id) !== -1) {
+    const displaySaveObject = (id) => {
+        if (favMeteoInfos.findIndex(i => i === id) !== -1) {
             // L'object est sauvegardé
             return (
                 <Button style={styles.button}
-                        onPress={unsaveObject}
+                        onPress={() => unsaveObject(id, dispatch)}
                         title='Retirer des favoris'
                         appearance='ghost'
                         status='danger'
@@ -38,7 +28,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
         // L'object n'est pas sauvegardé
         return (
             <Button style={styles.button}
-                    onPress={saveObject}
+                    onPress={() => saveObject(id, dispatch)}
                     title='Ajouter aux favoris'
                     appearance='ghost'
                     status='danger'
@@ -74,7 +64,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                                 {route.params.meteoInfoData.name}
                             </Text>
                             <Layout>
-                                {displaySaveObject()}
+                                {displaySaveObject(route.params.meteoInfoData.id)}
                             </Layout>
                         </Layout>
                     </Layout>
@@ -94,12 +84,6 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
         </SafeAreaView>
     );
 };
-
-const mapStateToProps = (state) => {
-    return {
-        favMeteoInfos: state.favMeteoInfoID
-    }
-}
 
 /*
         <SafeAreaView style={{ flex: 1 }}>

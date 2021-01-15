@@ -11,10 +11,9 @@ import AppLoading from "../components/AppLoading";
 
 const SearchNavigation = createStackNavigator();
 const FavNavigation = createStackNavigator();
-const TabNavigation = createBottomTabNavigator();
+const {Navigator, Screen} = createBottomTabNavigator();
 
 function searchStackScreens() {
-
     return (
         <SearchNavigation.Navigator
             initialRouteName="ViewSearch"
@@ -23,11 +22,6 @@ function searchStackScreens() {
                 name="ViewSearch"
                 component={Home}
                 options={{ title: 'Home' }}
-            />
-            <SearchNavigation.Screen
-                name="ViewAppLoading"
-                component={AppLoading}
-                options={{ title: 'AppLOading' }}
             />
             <SearchNavigation.Screen
                 name="ViewMeteoInfo"
@@ -74,24 +68,20 @@ const BottomTabBar = ({ navigation, state }) => (
     </BottomNavigation>
 );
 
-function RootStack() {
-    return (
-        <NavigationContainer>
-            <TabNavigation.Navigator
-                tabBarOptions={{
-                    activeTintColor: Colors.mainGreen,
-                }}>
-                <TabNavigation.Screen
-                    name="Recherche"
-                    component={searchStackScreens}
-                />
-                <TabNavigation.Screen
-                    name="Favoris"
-                    component={favStackScreens}
-                />
-            </TabNavigation.Navigator>
-        </NavigationContainer>
-    );
-}
+const TabNavigator = () => (
+    <Navigator
+        initialRouteName="ViewHome"
+        tabBar={props => <BottomTabBar {...props} />}
+    >
+        <Screen name='ViewHome' component={searchStackScreens}/>
+        <Screen name='ViewFavoris' component={favStackScreens}/>
+    </Navigator>
+);
+
+const RootStack = () => (
+    <NavigationContainer>
+        <TabNavigator/>
+    </NavigationContainer>
+);
 
 export default RootStack;

@@ -6,6 +6,8 @@ import MeteoInfoListItem from './MeteoInfoListItem';
 import {Layout, List} from "@ui-kitten/components";
 import {getWeatherByCityID, getWeatherByCityName} from "../api/OpenWeatherMap";
 import DisplayError from "./DisplayError";
+import {mapStateToProps} from "../helpers/favActionHelpers";
+import {renderItem} from "../helpers/utilHelpers";
 
 const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
     const [meteoInfos, setMeteoInfos] = useState([]);
@@ -56,10 +58,6 @@ const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
         await setIsLoading(false);
     };
 
-    const renderItem = ({item}) => {
-        return (<MeteoInfoListItem meteoInfoData={item} onClick={navigateToObjectDetails} isFav={amIaFavMeteoINfo(item.id)} />);
-    }
-
     return (
         <Layout style={styles.container}>
             {isError ?
@@ -71,7 +69,7 @@ const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
                     <List
                         data={meteoInfos}
                         extraData={favMeteoInfos}
-                        renderItem={renderItem}
+                        renderItem={(item) => renderItem(item, navigateToObjectDetails, favMeteoInfos)}
                     />
                 )
             }
@@ -79,11 +77,6 @@ const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
     );
 };
 
-const mapStateToProps = (state) => {
-    return {
-        favMeteoInfos: state.favMeteoInfoID
-    }
-}
 export default connect(mapStateToProps)(FavMeteoInfos);
 
 const styles = StyleSheet.create({

@@ -1,19 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Icon, Layout, List, TopNavigation} from '@ui-kitten/components';
-import {StyleSheet, SafeAreaView, TextInput, ActivityIndicator, RefreshControl} from 'react-native';
+import {Button, Icon, Layout, List, Spinner, TopNavigation} from '@ui-kitten/components';
+import {StyleSheet, SafeAreaView, TextInput, ActivityIndicator, RefreshControl, Keyboard} from 'react-native';
 import MeteoInfoListItem from "./MeteoInfoListItem";
 import {connect} from 'react-redux';
 import * as Location from "expo-location";
 import {getWeatherByCityName, getWeatherByLatLong} from "../api/OpenWeatherMap";
 import DisplayError from "./DisplayError";
-import fakeMeteo from "../helpers/fakeMeteo";
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {ThemeContext} from "../definitions/theme-context";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {mapStateToProps, amIaFavMeteoInfo} from "../helpers/favActionHelpers";
+import {renderItem} from "../helpers/utilHelpers";
 
 
 const Home = ({navigation, favMeteoInfos}) => {
-
     const themeContext = React.useContext(ThemeContext);
 
     const [meteoInfos, setMeteoInfos] = useState([]);
@@ -63,6 +61,7 @@ const Home = ({navigation, favMeteoInfos}) => {
     }
 
     const requestWeather = async(functionToCall, ...arr) => {
+        Keyboard.dismiss();
         await setIsError(false);
         await setIsLoading(true);
         try {
@@ -104,10 +103,6 @@ const Home = ({navigation, favMeteoInfos}) => {
         navigation.navigate("ViewMeteoInfo", {meteoInfoData});
     };
 
-    const amIaFavMeteoInfo = (meteoInfoID) => {
-        return (favMeteoInfos.findIndex(i => i === meteoInfoID) !== -1);
-    };
-
     const onRefresh = async() => {
         switch(lastCall) {
             case 'name':
@@ -121,10 +116,6 @@ const Home = ({navigation, favMeteoInfos}) => {
         }
     };
 
-
-    const renderItem = ({item}) => {
-        return (<MeteoInfoListItem meteoInfoData={item} onClick={navigateToMeteoInfoDetails} isFav={amIaFavMeteoInfo(item.id)} />);
-    }
     try {
         return (
             <SafeAreaView style={styles.container}>
@@ -133,7 +124,11 @@ const Home = ({navigation, favMeteoInfos}) => {
 
                 <Layout style={styles.searchContainer}>
                     <Layout style={styles.searchContainer}>
-                        <TextInput style={styles.inputRestaurantName} placeholder="Ville" onChangeText={(text) => setCityName(text)}/>
+                        <TextInput
+                            placeholder="Ville"
+                            onChangeText={(text) => setCityName(text)}
+                            onSubmitEditing={requestWeatherByCityName}
+                        />
                     </Layout>
                     <Button
                         accessoryLeft={SearchIcon}
@@ -160,13 +155,13 @@ const Home = ({navigation, favMeteoInfos}) => {
                     (<DisplayError message={error}/>) :
                     (isLoading ?
                             (<Layout style={styles.containerLoading}>
-                                <ActivityIndicator size="large" color="#0000ff"/>
+                                <Spinner size="giant"/>
                             </Layout>) :
                             <List
                                 data={meteoInfos}
                                 keyExtractor={(item) => item.id.toString()}
                                 extraData={favMeteoInfos}
-                                renderItem={renderItem}
+                                renderItem={(item) => renderItem(item, navigateToMeteoInfoDetails, favMeteoInfos)}
                                 refreshControl={
                                     <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
                                 }
@@ -180,12 +175,6 @@ const Home = ({navigation, favMeteoInfos}) => {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        favMeteoInfos: state.favMeteoInfoID
-    }
-}
-
 export default connect(mapStateToProps)(Home);
 
 const styles = StyleSheet.create({
@@ -196,6 +185,10 @@ const styles = StyleSheet.create({
     },
     searchContainer: {
         marginBottom: 16,
+    },
+    containerLoading: {
+        flex: 1,
+        alignItems: 'center',
     },
     tinyIcon: {
         height:32,
