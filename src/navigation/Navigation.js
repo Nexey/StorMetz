@@ -8,6 +8,7 @@ import {NavigationContainer} from "@react-navigation/native";
 import MeteoInfo from "../components/MeteoInfo";
 import FavMeteoInfos from "../components/FavMeteoInfos";
 import AppLoading from "../components/AppLoading";
+import {StyleSheet} from "react-native";
 
 const SearchNavigation = createStackNavigator();
 const FavNavigation = createStackNavigator();
@@ -52,11 +53,11 @@ function favStackScreens() {
 };
 
 const StarIcon = (props) => (
-    <Icon {...props} name='star' pack="feather" width={24} height={24}/>
+    <Icon {...props} name='star' pack="feather" style={styles.tinyIcon}/>
 );
 
 const SearchIcon = (props) => (
-    <Icon {...props} name='home' pack="feather" width={24} height={24}/>
+    <Icon {...props} name='home' pack="feather" style={styles.tinyIcon}/>
 );
 
 const BottomTabBar = ({ navigation, state }) => (
@@ -85,3 +86,11 @@ const RootStack = () => (
 );
 
 export default RootStack;
+
+const styles = StyleSheet.create({
+    tinyIcon: {
+        height:24,
+        width:24,
+        tintColor:'#000000'
+    },
+});
