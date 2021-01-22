@@ -58,6 +58,8 @@ export async function getWeather(arr) {
                 return await callOpenWeatherMapAPI(`/weather?id=${arr.cityID}`);
             case "oneCall":
                 return await callOpenWeatherMapAPI(`/onecall?lat=${arr.oneCall.lat}&lon=${arr.oneCall.lon}`);
+            case "nameFromCoords":
+                return await callOpenWeatherMapAPIReverse(`/reverse?lat=${arr.nameFromCoords.lat}&lon=${arr.nameFromCoords.lon}&limit=1`);
             default:
                 return;
         }
