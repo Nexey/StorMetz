@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 function createIconsMap() {

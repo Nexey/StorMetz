@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layout, Text} from '@ui-kitten/components';
+import {Card, Layout, Text} from '@ui-kitten/components';
 import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import Flag from "react-native-flags";
 /*
@@ -15,7 +15,7 @@ import Flag from "react-native-flags";
 */
 const MeteoInfoListItem = ({onClick, meteoInfoData, meteoInfoData : {main, id}, isFav = false}) => {
     return (
-        <TouchableOpacity onPress={() => (onClick(meteoInfoData))}>
+        <Card onPress={() => (onClick(meteoInfoData))}>
             <Layout style={styles.container}>
                 <Layout style={styles.informationContainer}>
                     <Layout style={styles.title}>
@@ -31,7 +31,7 @@ const MeteoInfoListItem = ({onClick, meteoInfoData, meteoInfoData : {main, id}, 
                     </Layout>
                 </Layout>
             </Layout>
-        </TouchableOpacity>
+        </Card>
     );
 };
 

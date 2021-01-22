@@ -4,7 +4,7 @@ import {StyleSheet, SafeAreaView, TextInput, ActivityIndicator, RefreshControl, 
 import MeteoInfoListItem from "./MeteoInfoListItem";
 import {connect} from 'react-redux';
 import * as Location from "expo-location";
-import {getWeatherByCityName, getWeatherByLatLong} from "../api/OpenWeatherMap";
+import {getWeather} from "../api/OpenWeatherMap";
 import DisplayError from "./DisplayError";
 import {ThemeContext} from "../definitions/theme-context";
 import {mapStateToProps, amIaFavMeteoInfo} from "../helpers/favActionHelpers";
@@ -42,7 +42,7 @@ const Home = ({navigation, favMeteoInfos}) => {
         (async () => {
             if (location !== undefined) {
                 if (location.length !== 0) {
-                    await requestWeather(getWeatherByLatLong, {"lat":location.coords.latitude}, {"lon":location.coords.longitude});
+                    await requestWeather( {"coords":{"lat":location.coords.latitude, "lon":location.coords.longitude}});
                 }
             }
         })();
@@ -60,12 +60,13 @@ const Home = ({navigation, favMeteoInfos}) => {
         return await Location.getCurrentPositionAsync({});
     }
 
-    const requestWeather = async(functionToCall, ...arr) => {
+    const requestWeather = async(arr) => {
         Keyboard.dismiss();
+        //*
         await setIsError(false);
         await setIsLoading(true);
         try {
-            const openWeatherData = await functionToCall(...arr);
+            const openWeatherData = await getWeather(arr);
             if (openWeatherData===undefined) {
                 setError("Aucun résultat n'a été trouvé.");
                 setIsError(true);
@@ -81,6 +82,7 @@ const Home = ({navigation, favMeteoInfos}) => {
             setIsError(true);
         }
         setIsLoading(false);
+        //*/
     }
 
     const requestWeatherByLatLon = async() => {
@@ -96,7 +98,7 @@ const Home = ({navigation, favMeteoInfos}) => {
 
     const requestWeatherByCityName = async() => {
         setLastCall("name");
-        await requestWeather(getWeatherByCityName, {"cityName":cityName});
+        await requestWeather( {"cityName":cityName});
     };
 
     const navigateToMeteoInfoDetails = async(meteoInfoData) => {

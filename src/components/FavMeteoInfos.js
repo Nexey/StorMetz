@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 
 import MeteoInfoListItem from './MeteoInfoListItem';
 import {Layout, List} from "@ui-kitten/components";
-import {getWeatherByCityID, getWeatherByCityName} from "../api/OpenWeatherMap";
+import {getWeather} from "../api/OpenWeatherMap";
 import DisplayError from "./DisplayError";
 import {mapStateToProps} from "../helpers/favActionHelpers";
 import {renderItem} from "../helpers/utilHelpers";
@@ -31,7 +31,7 @@ const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
 
     const getObjectById = async(id) => {
         try {
-            const openWeatherData = await getWeatherByCityID({"cityID":id});
+            const openWeatherData = await getWeather({"cityID":id});
             if (openWeatherData===undefined)
                 console.log("Nothing retrieved");
             else {

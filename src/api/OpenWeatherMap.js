@@ -36,53 +36,30 @@ async function callOpenWeatherMapAPI(endpoint) {
     }
 }
 
-export async function getLocationNameByLatLon(...arr) {
-    arr.forEach(arg => {
-        if ("lat" in arg)
-            params.lat = arg.lat;
-        if ("lon" in arg)
-            params.lon = arg.lon
-    });
-
-    return await callOpenWeatherMapAPIReverse(`/reverse?lat=${params.lat}&lon=${params.lon}&limit=1`);
+/* Input : Object
+ * Exemple :
+ * Object {
+ *   "coords": Object {
+ *     "lat": 37.4219968,
+ *     "lon": -122.0840006,
+ *   },
+ * }
+ *
+ */
+export async function getWeather(arr) {
+    const param = Object.keys(arr);
+    if (param.length === 1) {
+        switch(param[param.length - 1]) {
+            case "coords":
+                return await callOpenWeatherMapAPI(`/weather?lat=${arr.coords.lat}&lon=${arr.coords.lon}`);
+            case "cityName":
+                return await callOpenWeatherMapAPI(`/weather?q=${arr.cityName}`);
+            case "cityID":
+                return await callOpenWeatherMapAPI(`/weather?id=${arr.cityID}`);
+            case "oneCall":
+                return await callOpenWeatherMapAPI(`/onecall?lat=${arr.oneCall.lat}&lon=${arr.oneCall.lon}`);
+            default:
+                return;
+        }
+    }
 }
-
-export async function getWeatherByLatLong(...arr) {
-    arr.forEach(arg => {
-        if ("lat" in arg)
-            params.lat = arg.lat;
-        if ("lon" in arg)
-            params.lon = arg.lon
-    });
-
-    return await callOpenWeatherMapAPI(`/weather?lat=${params.lat}&lon=${params.lon}`);
-}
-
-export async function getWeatherByCityName(...arr) {
-    arr.forEach(arg => {
-        if ("cityName" in arg)
-            params.cityName = arg.cityName;
-    });
-
-    return await callOpenWeatherMapAPI(`/find?q=${params.cityName}`);
-};
-
-export async function getWeatherOneCall(...arr) {
-    arr.forEach(arg => {
-        if ("lat" in arg)
-            params.lat = arg.lat;
-        if ("lon" in arg)
-            params.lon = arg.lon
-    });
-
-    return await callOpenWeatherMapAPI(`/onecall?lat=${params.lat}&lon=${params.lon}`);
-}
-
-export async function getWeatherByCityID(...arr) {
-    arr.forEach(arg => {
-        if ("cityID" in arg)
-            params.cityID = arg.cityID;
-    });
-
-    return await callOpenWeatherMapAPI(`/weather?id=${params.cityID}`);
-};

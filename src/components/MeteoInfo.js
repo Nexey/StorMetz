@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {Button, Icon, Layout, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
 import {Image, SafeAreaView, StyleSheet} from 'react-native';
 import { connect } from 'react-redux';
-import {getWeatherOneCall} from "../api/OpenWeatherMap";
+import {getWeather} from "../api/OpenWeatherMap";
 import {saveObject, unsaveObject, mapStateToProps} from "../helpers/favActionHelpers";
 import Flag from "react-native-flags";
 
@@ -38,7 +38,8 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
     }
 
     const test = async() => {
-        const response = await getWeatherOneCall(route.params.meteoInfoData.coord);
+        const response = await getWeather({"oneCall":route.params.meteoInfoData.coord});
+        console.log(JSON.stringify(response.data));
     }
 
     const BookmarkIcon = (props) => (
