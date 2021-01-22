@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, Icon, Layout, List, Spinner, TopNavigation} from '@ui-kitten/components';
-import {StyleSheet, SafeAreaView, TextInput, ActivityIndicator, RefreshControl, Keyboard} from 'react-native';
+import {StyleSheet, SafeAreaView, TextInput, RefreshControl, Keyboard, Animated} from 'react-native';
 import MeteoInfoListItem from "./MeteoInfoListItem";
 import {connect} from 'react-redux';
 import * as Location from "expo-location";
@@ -13,6 +13,7 @@ import {renderItem} from "../helpers/utilHelpers";
 
 const Home = ({navigation, favMeteoInfos}) => {
     const themeContext = React.useContext(ThemeContext);
+    const fadeAnim = useRef(new Animated.Value(0)).current  // Initial value for opacity: 0
 
     const [meteoInfos, setMeteoInfos] = useState([]);
     const [isError, setIsError] = useState(false);
@@ -21,6 +22,17 @@ const Home = ({navigation, favMeteoInfos}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [location, setLocation] = useState([]);
     const [lastCall, setLastCall] = useState('');
+
+    useEffect(() => {
+        Animated.timing(
+            fadeAnim,
+            {
+                toValue: 1,
+                duration: 2500,
+                useNativeDriver: true
+            }
+        ).start();
+    }, [fadeAnim])
 
     const SearchIcon = (props) => (
         <Icon {...props} name='search-outline' />
@@ -120,57 +132,64 @@ const Home = ({navigation, favMeteoInfos}) => {
 
     try {
         return (
-            <SafeAreaView style={styles.container}>
-                <TopNavigation title='MyApp' alignment='center'/>
-                <Button onPress={themeContext.toggleTheme}>TOGGLE THEME</Button>
+            <Animated.View
+                style={{
+                    opacity: fadeAnim,
+                }}
+            >
+                <SafeAreaView style={styles.container}>
+                    <TopNavigation title='MyApp' alignment='center'/>
+                    <Button onPress={themeContext.toggleTheme}>TOGGLE THEME</Button>
 
-                <Layout style={styles.searchContainer}>
                     <Layout style={styles.searchContainer}>
-                        <TextInput
-                            placeholder="Ville"
-                            onChangeText={(text) => setCityName(text)}
-                            onSubmitEditing={requestWeatherByCityName}
-                        />
+                        <Layout style={styles.searchContainer}>
+                            <TextInput
+                                placeholder="Ville"
+                                onChangeText={(text) => setCityName(text)}
+                                onSubmitEditing={requestWeatherByCityName}
+                            />
+                        </Layout>
+                        <Button
+                            accessoryLeft={SearchIcon}
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',}}
+                            name={'map-marker-alt'}
+                            onPress={requestWeatherByCityName}
+                        >
+                            Rechercher
+                        </Button>
+                        <Button
+                            accessoryLeft={LocationPinIcon}
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',}}
+                            name={'map-marker-alt'}
+                            onPress={requestWeatherByLatLon}
+                        >
+                            Me localiser
+                        </Button>
                     </Layout>
-                    <Button
-                        accessoryLeft={SearchIcon}
-                        style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',}}
-                        name={'map-marker-alt'}
-                        onPress={requestWeatherByCityName}
-                    >
-                        Rechercher
-                    </Button>
-                    <Button
-                        accessoryLeft={LocationPinIcon}
-                        style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',}}
-                        name={'map-marker-alt'}
-                        onPress={requestWeatherByLatLon}
-                    >
-                        Me localiser
-                    </Button>
-                </Layout>
-                {isError ?
+                    {isError ?
                     (<DisplayError message={error}/>) :
                     (isLoading ?
-                            (<Layout style={styles.containerLoading}>
-                                <Spinner size="giant"/>
-                            </Layout>) :
-                            <List
-                                data={meteoInfos}
-                                keyExtractor={(item) => item.id.toString()}
-                                extraData={favMeteoInfos}
-                                renderItem={(item) => renderItem(item, navigateToMeteoInfoDetails, favMeteoInfos)}
-                                refreshControl={
-                                    <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
-                                }
-                            />
+                    (<Layout style={styles.containerLoading}>
+                        <Spinner size="giant"/>
+                    </Layout>)
+                        :
+                    <List
+                        data={meteoInfos}
+                        keyExtractor={(item) => item.id.toString()}
+                        extraData={favMeteoInfos}
+                        renderItem={(item) => renderItem(item, navigateToMeteoInfoDetails, favMeteoInfos)}
+                        refreshControl={
+                            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+                        }
+                    />
                     )
-                }
-            </SafeAreaView>
+                    }
+                </SafeAreaView>
+            </Animated.View>
         );
     } catch(error) {
         console.log(error);

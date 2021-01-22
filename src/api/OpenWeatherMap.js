@@ -47,9 +47,10 @@ async function callOpenWeatherMapAPI(endpoint) {
  *
  */
 export async function getWeather(arr) {
-    const param = Object.keys(arr);
-    if (param.length === 1) {
-        switch(param[param.length - 1]) {
+    const keys = Object.keys(arr);
+    if (keys.length === 1) {
+        const param = keys.pop();
+        switch(param) {
             case "coords":
                 return await callOpenWeatherMapAPI(`/weather?lat=${arr.coords.lat}&lon=${arr.coords.lon}`);
             case "cityName":
