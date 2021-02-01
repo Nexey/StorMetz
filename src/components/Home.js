@@ -14,7 +14,6 @@ import {renderItem} from "../helpers/utilHelpers";
 const Home = ({navigation, favMeteoInfos}) => {
     const themeContext = React.useContext(ThemeContext);
     const fadeAnim = useRef(new Animated.Value(0)).current  // Initial value for opacity: 0
-
     const [meteoInfos, setMeteoInfos] = useState([]);
     const [isError, setIsError] = useState(false);
     const [error, setError] = useState('');
@@ -132,13 +131,13 @@ const Home = ({navigation, favMeteoInfos}) => {
 
     try {
         return (
-            <Animated.View
-                style={{
-                    opacity: fadeAnim,
-                }}
-            >
-                <SafeAreaView style={styles.container}>
-                    <TopNavigation title='MyApp' alignment='center'/>
+            <SafeAreaView style={styles.container}>
+                <TopNavigation title='MyApp' alignment='center'/>
+                <Animated.View
+                        style={{
+                            opacity: fadeAnim,
+                        }}
+                    >
                     <Button onPress={themeContext.toggleTheme}>TOGGLE THEME</Button>
 
                     <Layout style={styles.searchContainer}>
@@ -187,9 +186,9 @@ const Home = ({navigation, favMeteoInfos}) => {
                         }
                     />
                     )
-                    }
-                </SafeAreaView>
-            </Animated.View>
+                }
+                </Animated.View>
+            </SafeAreaView>
         );
     } catch(error) {
         console.log(error);
