@@ -2,14 +2,14 @@ import axios from "axios";
 import React from "react";
 const API_KEY =     '66b84481c895aa59bb2fe44d7a263372';
 const url_end =     `&units=metric&lang=fr&appid=${API_KEY}`;
-
 const url =         "https://api.openweathermap.org/data/2.5";
-const urlReverse =  "http://api.openweathermap.org/geo/1.0";
 
 const callAPI = axios.create({
     baseURL: url,
     timeout: 1000,
 });
+
+const urlReverse =  "http://api.openweathermap.org/geo/1.0";
 
 const callAPIReverse = axios.create({
     baseURL: urlReverse,
