@@ -27,7 +27,7 @@ const Home = ({navigation, favMeteoInfos}) => {
             fadeAnim,
             {
                 toValue: 1,
-                duration: 2500,
+                duration: 500,
                 useNativeDriver: true
             }
         ).start();

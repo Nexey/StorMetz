@@ -1,6 +1,6 @@
 import React from 'react';
-import {Card, Layout, Text} from '@ui-kitten/components';
-import {Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Card, Layout, Text, TopNavigation} from '@ui-kitten/components';
+import {Image, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native';
 import Flag from "react-native-flags";
 /*
                         <Image
@@ -16,22 +16,29 @@ import Flag from "react-native-flags";
 const MeteoInfoListItem = ({onClick, meteoInfoData, meteoInfoData : {main, id}, isFav = false}) => {
     return (
         <Card onPress={() => (onClick(meteoInfoData))}>
-            <Layout style={styles.container}>
-                <Layout style={styles.informationContainer}>
-                    <Layout style={styles.title}>
-                        <Layout style={styles.statContainer}>
-                            <Flag
-                                code={meteoInfoData.sys.country}
-                                size={32}
-                            />
-                            <Text category='h1' status="info">
-                                {meteoInfoData.name}
-                            </Text>
+            <Layout>
+                <Layout>
+                    <Layout>
+                        <Layout style={{flex: 1, flexDirection: "row", justifyContent:"center"}}>
+                            <Layout style={{flex: 3, flexDirection: "row"}}>
+                                <Layout>
+                                    <Flag
+                                        code={meteoInfoData.sys.country}
+                                        size={48}
+                                    />
+                                </Layout>
+                                <Layout>
+                                    <Text category='h1' status="info">
+                                        {meteoInfoData.name}
+                                    </Text>
+                                </Layout>
+                            </Layout>
                         </Layout>
                     </Layout>
                 </Layout>
             </Layout>
         </Card>
+
     );
 };
 

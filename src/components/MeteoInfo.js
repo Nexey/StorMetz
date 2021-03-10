@@ -20,8 +20,9 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
                         onPress={() => unsaveObject(id, dispatch)}
                         title='Retirer des favoris'
                         appearance='ghost'
-                        status='danger'
+                        status='info'
                         accessoryLeft={BookmarkIcon}
+                        size='medium'
                 />
             );
         }
@@ -31,8 +32,9 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
                     onPress={() => saveObject(id, dispatch)}
                     title='Ajouter aux favoris'
                     appearance='ghost'
-                    status='danger'
+                    status='info'
                     accessoryLeft={BookmarkOutlineIcon}
+                    size='medium'
             />
         );
     }
@@ -43,43 +45,47 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
     }
 
     const BookmarkIcon = (props) => (
-        <Icon {...props} name='bookmark' pack="materialcommunity" />
+        <Icon {...props} style={[props.style, { width: 32, height: 32 }]} name='bookmark' pack="materialcommunity" />
     );
 
     const BookmarkOutlineIcon = (props) => (
-        <Icon {...props} name='bookmark-outline' pack="materialcommunity" />
+        <Icon {...props} style={[props.style, { width: 32, height: 32 }]} name='bookmark-outline' pack="materialcommunity" />
     );
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <TopNavigation title={route.params.meteoInfoData.name} alignment='center'/>
-            <Layout style={styles.container}>
-                <Layout style={styles.informationContainer}>
-                    <Layout style={styles.title}>
-                        <Layout style={styles.statContainer}>
+        <SafeAreaView style={{flex: 1}}>
+            <Layout>
+                <TopNavigation title={route.params.meteoInfoData.name} alignment='center'/>
+            </Layout>
+            <Layout style={{flex: 1, padding: 15}}>
+                <Layout style={{flex: 1, flexDirection: "row", justifyContent:"center", borderWidth: 2, borderColor: 'black'}}>
+                    <Layout style={{flex: 3, flexDirection: "row"}}>
+                        <Layout>
                             <Flag
                                 code={route.params.meteoInfoData.sys.country}
-                                size={32}
+                                size={48}
                             />
+                        </Layout>
+                        <Layout>
                             <Text category='h1' status="info">
                                 {route.params.meteoInfoData.name}
                             </Text>
-                            <Layout>
-                                {displaySaveObject(route.params.meteoInfoData.id)}
-                            </Layout>
                         </Layout>
                     </Layout>
-                    <Layout>
-                        <Image
-                            style={styles.tinyLogo}
-                            source={{
-                                uri: `http://openweathermap.org/img/wn/${route.params.meteoInfoData.weather[0].icon}@4x.png`,
-                            }}
-                        />
-                        <Text>
-                            {route.params.meteoInfoData.weather[0].description.charAt(0).toUpperCase() + route.params.meteoInfoData.weather[0].description.slice(1)}
-                        </Text>
+                    <Layout style={{flex: 1}}>
+                        {displaySaveObject(route.params.meteoInfoData.id)}
                     </Layout>
+                </Layout>
+                <Layout style={{flex: 6, flexDirection: "row", borderWidth: 2, borderColor: 'black'}}>
+                    <Image
+                        style={styles.tinyLogo}
+                        source={{
+                            uri: `http://openweathermap.org/img/wn/${route.params.meteoInfoData.weather[0].icon}@4x.png`,
+                        }}
+                    />
+                    <Text>
+                        {route.params.meteoInfoData.weather[0].description.charAt(0).toUpperCase() + route.params.meteoInfoData.weather[0].description.slice(1)}
+                    </Text>
                 </Layout>
             </Layout>
         </SafeAreaView>
@@ -182,6 +188,6 @@ const styles = StyleSheet.create({
         height: 64,
     },
     button: {
-        margin: 2,
+        height: 64
     },
 });
