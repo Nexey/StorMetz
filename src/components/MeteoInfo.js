@@ -1,16 +1,13 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Icon, Layout, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
-import {Image, SafeAreaView, StyleSheet} from 'react-native';
+import {Image, SafeAreaView, StyleSheet, Dimensions} from 'react-native';
 import { connect } from 'react-redux';
 import {getWeather} from "../api/OpenWeatherMap";
 import {saveObject, unsaveObject, mapStateToProps} from "../helpers/favActionHelpers";
 import Flag from "react-native-flags";
 
 const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}) => {
-
-    const navigateBack = () => {
-        navigation.goBack();
-    };
+    const [allInfo, setAllInfo] = useState({});
 
     const displaySaveObject = (id) => {
         if (favMeteoInfos.findIndex(i => i === id) !== -1) {
@@ -39,9 +36,15 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
         );
     }
 
-    const test = async() => {
+    useEffect(() => {
+        (async () => {
+            await fetchAllInfo();
+        })();
+    }, []);
+
+    const fetchAllInfo = async() => {
         const response = await getWeather({"oneCall":route.params.meteoInfoData.coord});
-        console.log(JSON.stringify(response.data));
+        await setAllInfo(response.data);
     }
 
     const BookmarkIcon = (props) => (
@@ -54,12 +57,9 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <Layout>
-                <TopNavigation title={route.params.meteoInfoData.name} alignment='center'/>
-            </Layout>
             <Layout style={{flex: 1, padding: 15}}>
                 <Layout style={{flex: 1, flexDirection: "row", justifyContent:"center", borderWidth: 2, borderColor: 'black'}}>
-                    <Layout style={{flex: 3, flexDirection: "row"}}>
+                    <Layout style={{flex: 5, flexDirection: "row"}}>
                         <Layout>
                             <Flag
                                 code={route.params.meteoInfoData.sys.country}
@@ -76,7 +76,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
                         {displaySaveObject(route.params.meteoInfoData.id)}
                     </Layout>
                 </Layout>
-                <Layout style={{flex: 6, flexDirection: "row", borderWidth: 2, borderColor: 'black'}}>
+                <Layout style={{flex: 1, flexDirection: "row", borderWidth: 2, borderColor: 'black'}}>
                     <Image
                         style={styles.tinyLogo}
                         source={{
@@ -86,6 +86,9 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
                     <Text>
                         {route.params.meteoInfoData.weather[0].description.charAt(0).toUpperCase() + route.params.meteoInfoData.weather[0].description.slice(1)}
                     </Text>
+                </Layout>
+                <Layout style={{flex:3, borderWidth: 2, borderColor: 'black', alignItems: "center"}}>
+
                 </Layout>
             </Layout>
         </SafeAreaView>

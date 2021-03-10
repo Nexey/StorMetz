@@ -51,14 +51,52 @@ export async function getWeather(arr) {
     if (keys.length === 1) {
         const param = keys.pop();
         switch(param) {
+
+            /**
+             * Les 2 cas issus de la homepage
+             */
+
+            /**
+             * Cas 1 : Recherche
+             */
+            case "searchData":
+                let endpoint = "";
+                let previous = false;
+                if (arr.searchData.cityName.length > 0) {
+                    endpoint += arr.searchData.cityName;
+                    previous = true;
+                }
+                if (arr.searchData.zipCode.length > 0) {
+                    endpoint += (previous?",":"") + arr.searchData.zipCode;
+                    previous = true;
+                }
+                if (arr.searchData.countryName.length > 0) {
+                    endpoint += (previous?",":"") + arr.searchData.countryName;
+                }
+                return await callOpenWeatherMapAPI(`/weather?q=` + endpoint);
+            /**
+             * Cas 2 : Géolocalisation
+             */
             case "coords":
                 return await callOpenWeatherMapAPI(`/weather?lat=${arr.coords.lat}&lon=${arr.coords.lon}`);
-            case "cityName":
-                return await callOpenWeatherMapAPI(`/weather?q=${arr.cityName}`);
+
+            /**
+             * La fonction utilisée pour afficher les favoris
+             */
             case "cityID":
                 return await callOpenWeatherMapAPI(`/weather?id=${arr.cityID}`);
+
+            /**
+             * La fonction utilisée pour afficher toutes les infos d'une ville
+             */
             case "oneCall":
                 return await callOpenWeatherMapAPI(`/onecall?lat=${arr.oneCall.lat}&lon=${arr.oneCall.lon}`);
+
+            /**
+             * La fonction oneCall ne donne pas le nom de la ville,
+             * il faut donc pouvoir la récupérer si la recherche
+             * s'est faite avec des coordonnées
+             */
             case "nameFromCoords":
                 return await callOpenWeatherMapAPIReverse(`/reverse?lat=${arr.nameFromCoords.lat}&lon=${arr.nameFromCoords.lon}&limit=1`);
             default:

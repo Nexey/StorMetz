@@ -18,6 +18,8 @@ const Home = ({navigation, favMeteoInfos}) => {
     const [isError, setIsError] = useState(false);
     const [error, setError] = useState('');
     const [cityName, setCityName] = useState('');
+    const [countryName, setCountryName] = useState('');
+    const [zipCode, setZipCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [location, setLocation] = useState([]);
     const [lastCall, setLastCall] = useState('');
@@ -107,10 +109,27 @@ const Home = ({navigation, favMeteoInfos}) => {
         }
     }
 
-    const requestWeatherByCityName = async() => {
-        setLastCall("name");
-        await requestWeather( {"cityName":cityName});
-    };
+    const requestWeatherBySearch = async() => {
+        setLastCall("search");
+        const searchData = {"searchData":{"cityName":"","countryName":"","zipCode":""}};
+        if (cityName.length > 0)
+            searchData.searchData.cityName = cityName;
+        if (countryName.length > 0) {
+            const lookup = require('country-code-lookup')
+            try {
+                const isoCode = lookup.byCountry(countryName);
+                searchData.searchData.countryName = isoCode.iso2;
+            }
+            catch(err) {
+                console.log(err.message);
+            }
+        }
+        if (zipCode.length > 0)
+            searchData.searchData.zipCode = zipCode;
+
+        //console.log(searchData);
+        await requestWeather(searchData);
+    }
 
     const navigateToMeteoInfoDetails = async(meteoInfoData) => {
         navigation.navigate("ViewMeteoInfo", {meteoInfoData});
@@ -118,11 +137,11 @@ const Home = ({navigation, favMeteoInfos}) => {
 
     const onRefresh = async() => {
         switch(lastCall) {
-            case 'name':
-                await requestWeatherByCityName();
-                break;
             case 'coords':
                 await requestWeatherByLatLon();
+                break;
+            case "search" :
+                await requestWeatherBySearch();
                 break;
             default:
                 break;
@@ -131,30 +150,56 @@ const Home = ({navigation, favMeteoInfos}) => {
 
     try {
         return (
-            <SafeAreaView style={styles.container}>
-                <TopNavigation title='MyApp' alignment='center'/>
+            <SafeAreaView style={{flex: 1}}>
+                <Layout>
+                    <TopNavigation title="StorMetz" alignment='center'/>
+                </Layout>
                 <Animated.View
-                        style={{
-                            opacity: fadeAnim,
-                        }}
-                    >
-                    <Button onPress={themeContext.toggleTheme}>TOGGLE THEME</Button>
+                    style={{
+                        opacity: fadeAnim, padding: 15, flex: 1
+                    }}
+                >
+                    {/*<Button onPress={themeContext.toggleTheme}>TOGGLE THEME</Button>*/}
 
-                    <Layout style={styles.searchContainer}>
-                        <Layout style={styles.searchContainer}>
+                    {/* Text inputs */}
+                    <Layout style={{justifyContent: "space-between"}}>
+                        <Layout style={{alignItems: "flex-start", width: 50, borderBottomWidth:2, marginHorizontal: 5}}>
                             <TextInput
                                 placeholder="Ville"
                                 onChangeText={(text) => setCityName(text)}
-                                onSubmitEditing={requestWeatherByCityName}
+                                onSubmitEditing={requestWeatherBySearch}
+                                style={{height:48}}
                             />
                         </Layout>
+                        <Layout style={{flexDirection: "row", paddingBottom:15}}>
+                            <Layout style={{alignItems: "flex-start", width: 50, flex:2, borderBottomWidth:2, marginHorizontal: 5}}>
+                                <TextInput
+                                    placeholder="Pays"
+                                    onChangeText={(text) => setCountryName(text)}
+                                    onSubmitEditing={requestWeatherBySearch}
+                                    style={{height:48}}
+                                />
+                            </Layout>
+                            <Layout style={{flex:1}}/>
+                            <Layout style={{alignItems: "flex-start", width: 50, flex:2, borderBottomWidth:2, marginHorizontal: 5}}>
+                                <TextInput
+                                    placeholder="Code postal"
+                                    onChangeText={(text) => setZipCode(text)}
+                                    onSubmitEditing={requestWeatherBySearch}
+                                    style={{height:48}}
+                                />
+                            </Layout>
+                        </Layout>
+                    </Layout>
+
+                    <Layout style={{paddingBottom:15}}>
                         <Button
                             accessoryLeft={SearchIcon}
                             style={{
                                 justifyContent: 'center',
                                 alignItems: 'center',}}
                             name={'map-marker-alt'}
-                            onPress={requestWeatherByCityName}
+                            onPress={requestWeatherBySearch}
                         >
                             Rechercher
                         </Button>
@@ -169,24 +214,27 @@ const Home = ({navigation, favMeteoInfos}) => {
                             Me localiser
                         </Button>
                     </Layout>
-                    {isError ?
-                    (<DisplayError message={error}/>) :
-                    (isLoading ?
-                    (<Layout style={styles.containerLoading}>
-                        <Spinner size="giant"/>
-                    </Layout>)
-                        :
-                    <List
-                        data={meteoInfos}
-                        keyExtractor={(item) => item.id.toString()}
-                        extraData={favMeteoInfos}
-                        renderItem={(item) => renderItem(item, navigateToMeteoInfoDetails, favMeteoInfos)}
-                        refreshControl={
-                            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+                    <Layout>
+                        {isError ?
+                            (<DisplayError message={error}/>)
+                            :
+                            (isLoading ?
+                                    (<Layout style={styles.containerLoading}>
+                                        <Spinner size="giant"/>
+                                    </Layout>)
+                                    :
+                                    <List
+                                        data={meteoInfos}
+                                        keyExtractor={(item) => item.id.toString()}
+                                        extraData={favMeteoInfos}
+                                        renderItem={(item) => renderItem(item, navigateToMeteoInfoDetails, favMeteoInfos)}
+                                        refreshControl={
+                                            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+                                        }
+                                    />
+                            )
                         }
-                    />
-                    )
-                }
+                    </Layout>
                 </Animated.View>
             </SafeAreaView>
         );
