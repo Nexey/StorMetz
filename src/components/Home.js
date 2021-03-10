@@ -8,7 +8,7 @@ import {getWeather} from "../api/OpenWeatherMap";
 import DisplayError from "./DisplayError";
 import {ThemeContext} from "../definitions/theme-context";
 import {mapStateToProps, amIaFavMeteoInfo} from "../helpers/favActionHelpers";
-import {renderItem} from "../helpers/utilHelpers";
+import {renderMeteoItem} from "../helpers/utilHelpers";
 
 
 const Home = ({navigation, favMeteoInfos}) => {
@@ -227,7 +227,7 @@ const Home = ({navigation, favMeteoInfos}) => {
                                         data={meteoInfos}
                                         keyExtractor={(item) => item.id.toString()}
                                         extraData={favMeteoInfos}
-                                        renderItem={(item) => renderItem(item, navigateToMeteoInfoDetails, favMeteoInfos)}
+                                        renderItem={(item) => renderMeteoItem(item, navigateToMeteoInfoDetails, favMeteoInfos)}
                                         refreshControl={
                                             <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
                                         }

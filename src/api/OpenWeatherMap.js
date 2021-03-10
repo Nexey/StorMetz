@@ -16,8 +16,6 @@ const callAPIReverse = axios.create({
     timeout: 1000,
 });
 
-let params = {"lat":"", "lon":"","cityID":"","cityName":""};
-
 async function callOpenWeatherMapAPIReverse(endpoint) {
     try {
         const res = await callAPIReverse.get(endpoint + url_end);

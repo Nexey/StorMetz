@@ -7,7 +7,7 @@ import {Layout, List} from "@ui-kitten/components";
 import {getWeather} from "../api/OpenWeatherMap";
 import DisplayError from "./DisplayError";
 import {mapStateToProps} from "../helpers/favActionHelpers";
-import {renderItem} from "../helpers/utilHelpers";
+import {renderMeteoItem} from "../helpers/utilHelpers";
 
 const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
     const [meteoInfos, setMeteoInfos] = useState([]);
@@ -69,7 +69,7 @@ const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
                     <List
                         data={meteoInfos}
                         extraData={favMeteoInfos}
-                        renderItem={(item) => renderItem(item, navigateToObjectDetails, favMeteoInfos)}
+                        renderItem={(item) => renderMeteoItem(item, navigateToObjectDetails, favMeteoInfos)}
                     />
                 )
             }
