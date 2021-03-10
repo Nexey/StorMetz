@@ -1,13 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Icon, Layout, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
+import {Button, Icon, Layout, List, Spinner, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
 import {Image, SafeAreaView, StyleSheet, Dimensions} from 'react-native';
 import { connect } from 'react-redux';
 import {getWeather} from "../api/OpenWeatherMap";
 import {saveObject, unsaveObject, mapStateToProps} from "../helpers/favActionHelpers";
 import Flag from "react-native-flags";
+import moment from "moment";
+import DisplayError from "./DisplayError";
 
 const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}) => {
     const [allInfo, setAllInfo] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+    const [isError, setIsError] = useState(false);
 
     const displaySaveObject = (id) => {
         if (favMeteoInfos.findIndex(i => i === id) !== -1) {
@@ -43,8 +47,17 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
     }, []);
 
     const fetchAllInfo = async() => {
-        const response = await getWeather({"oneCall":route.params.meteoInfoData.coord});
-        await setAllInfo(response.data);
+        setIsLoading(true);
+        try {
+            const response = await getWeather({"oneCall": route.params.meteoInfoData.coord});
+            response.data.hourly = response.data.hourly.splice(0, 24);
+            await setAllInfo(response.data);
+            //console.log(JSON.stringify(response.data.hourly))
+        }
+        catch (err) {
+            setIsError(true);
+        }
+        setIsLoading(false);
     }
 
     const BookmarkIcon = (props) => (
@@ -54,6 +67,35 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
     const BookmarkOutlineIcon = (props) => (
         <Icon {...props} style={[props.style, { width: 32, height: 32 }]} name='bookmark-outline' pack="materialcommunity" />
     );
+
+    const convertirTimeStampEnHeure = (timestamp, timezone_offset) => {
+        return moment
+            .unix(timestamp + timezone_offset)
+            .subtract(1, "h")
+            .format("HH:mm");
+    };
+
+    const renderPrevisionHoraire = ({ item }) => {
+        const heure = convertirTimeStampEnHeure(item.dt, allInfo.timezone_offset);
+        return (
+            <Layout style={{alignItems:"center"}}>
+                <Text>{heure}</Text>
+                {getIcon(item.weather[0].icon)}
+                <Text>{~~item.temp}°C</Text>
+            </Layout>
+        );
+    };
+
+    const getIcon = (icon_id) => (
+        <Image
+            style={styles.tinyLogo}
+            source={{
+                uri: `http://openweathermap.org/img/wn/${icon_id}@4x.png`,
+            }}
+        />
+    )
+
+
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -77,18 +119,27 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
                     </Layout>
                 </Layout>
                 <Layout style={{flex: 1, flexDirection: "row", borderWidth: 2, borderColor: 'black'}}>
-                    <Image
-                        style={styles.tinyLogo}
-                        source={{
-                            uri: `http://openweathermap.org/img/wn/${route.params.meteoInfoData.weather[0].icon}@4x.png`,
-                        }}
-                    />
+                    {getIcon(route.params.meteoInfoData.weather[0].icon)}
                     <Text>
                         {route.params.meteoInfoData.weather[0].description.charAt(0).toUpperCase() + route.params.meteoInfoData.weather[0].description.slice(1)}
                     </Text>
                 </Layout>
-                <Layout style={{flex:3, borderWidth: 2, borderColor: 'black', alignItems: "center"}}>
-
+                <Layout style={{flex:4, borderWidth: 2, borderColor: 'black', alignItems: "center"}}>
+                    {isError ?
+                        (<DisplayError message={error}/>)
+                        :
+                        (isLoading ?
+                            (<Layout style={styles.containerLoading}>
+                                <Spinner size="giant"/>
+                            </Layout>)
+                            :
+                            <List
+                                horizontal={true}
+                                data={allInfo.hourly}
+                                renderItem={(item) => renderPrevisionHoraire(item)}
+                            />
+                        )
+                    }
                 </Layout>
             </Layout>
         </SafeAreaView>

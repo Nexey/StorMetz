@@ -163,7 +163,7 @@ const Home = ({navigation, favMeteoInfos}) => {
 
                     {/* Text inputs */}
                     <Layout style={{justifyContent: "space-between"}}>
-                        <Layout style={{alignItems: "flex-start", width: 50, borderBottomWidth:2, marginHorizontal: 5}}>
+                        <Layout style={{alignItems: "flex-start", borderBottomWidth:2, marginHorizontal: 5}}>
                             <TextInput
                                 placeholder="Ville"
                                 onChangeText={(text) => setCityName(text)}
@@ -172,7 +172,7 @@ const Home = ({navigation, favMeteoInfos}) => {
                             />
                         </Layout>
                         <Layout style={{flexDirection: "row", paddingBottom:15}}>
-                            <Layout style={{alignItems: "flex-start", width: 50, flex:2, borderBottomWidth:2, marginHorizontal: 5}}>
+                            <Layout style={{alignItems: "flex-start", flex:2, borderBottomWidth:2, marginHorizontal: 5}}>
                                 <TextInput
                                     placeholder="Pays"
                                     onChangeText={(text) => setCountryName(text)}
@@ -181,7 +181,7 @@ const Home = ({navigation, favMeteoInfos}) => {
                                 />
                             </Layout>
                             <Layout style={{flex:1}}/>
-                            <Layout style={{alignItems: "flex-start", width: 50, flex:2, borderBottomWidth:2, marginHorizontal: 5}}>
+                            <Layout style={{alignItems: "flex-start", flex:2, borderBottomWidth:2, marginHorizontal: 5}}>
                                 <TextInput
                                     placeholder="Code postal"
                                     onChangeText={(text) => setZipCode(text)}
