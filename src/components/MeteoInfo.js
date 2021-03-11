@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef, PureComponent} from 'react';
 import {Button, Icon, Layout, List, Spinner, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
-import {Image, SafeAreaView, StyleSheet, Dimensions} from 'react-native';
+import {Image, SafeAreaView, StyleSheet, Dimensions, FlatList} from 'react-native';
 import { connect } from 'react-redux';
 import {getWeather} from "../api/OpenWeatherMap";
 import {saveObject, unsaveObject, mapStateToProps} from "../helpers/favActionHelpers";
@@ -8,10 +8,16 @@ import Flag from "react-native-flags";
 import moment from "moment";
 import DisplayError from "./DisplayError";
 
+
 const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}) => {
     const [allInfo, setAllInfo] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
+    const [scrollOffset, setScrollOffset] = useState(0)
+    const scrollRef = useRef();
+    const screenWidth = Dimensions.get("window").width;
+    const [error, setError] = useState("");
+
 
     const displaySaveObject = (id) => {
         if (favMeteoInfos.findIndex(i => i === id) !== -1) {
@@ -56,6 +62,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
         }
         catch (err) {
             setIsError(true);
+            setError(err.message);
         }
         setIsLoading(false);
     }
@@ -75,15 +82,28 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
             .format("HH:mm");
     };
 
-    const renderPrevisionHoraire = ({ item }) => {
-        const heure = convertirTimeStampEnHeure(item.dt, allInfo.timezone_offset);
+    class PrevisionMeteo extends PureComponent {
+        constructor(props) {
+            super(props);
+            this.heure = convertirTimeStampEnHeure(this.props.item.dt, allInfo.timezone_offset);
+            this.icon = getIcon(this.props.item.weather[0].icon);;
+        }
+
+        render() {
+            return (
+                <Layout style={{alignItems:"center"}}>
+                    <Text>{this.heure}</Text>
+                    {this.icon}
+                    <Text>{~~this.props.item.temp}°C</Text>
+                </Layout>
+            );
+        }
+    }
+
+    const renderPrevisionMeteo = ({ item }) => {
         return (
-            <Layout style={{alignItems:"center"}}>
-                <Text>{heure}</Text>
-                {getIcon(item.weather[0].icon)}
-                <Text>{~~item.temp}°C</Text>
-            </Layout>
-        );
+            <PrevisionMeteo item={item}/>
+        )
     };
 
     const getIcon = (icon_id) => (
@@ -95,8 +115,18 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
         />
     )
 
-
-
+    const scrollRight = async() => {
+        scrollRef.current?.scrollToOffset({offset:scrollOffset + ~~(screenWidth * 0.2), animated: true });
+    }
+    const scrollLeft = async() => {
+        scrollRef.current?.scrollToOffset({offset:scrollOffset - ~~(screenWidth * 0.2), animated: true });
+    }
+    const ChevronRight = (props) => (
+        <Icon {...props} name='chevron-right' pack="feather"/>
+    );
+    const ChevronLeft = (props) => (
+        <Icon {...props} name='chevron-left' pack="feather"/>
+    );
     return (
         <SafeAreaView style={{flex: 1}}>
             <Layout style={{flex: 1, padding: 15}}>
@@ -124,23 +154,49 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
                         {route.params.meteoInfoData.weather[0].description.charAt(0).toUpperCase() + route.params.meteoInfoData.weather[0].description.slice(1)}
                     </Text>
                 </Layout>
-                <Layout style={{flex:4, borderWidth: 2, borderColor: 'black', alignItems: "center"}}>
-                    {isError ?
-                        (<DisplayError message={error}/>)
-                        :
-                        (isLoading ?
-                            (<Layout style={styles.containerLoading}>
-                                <Spinner size="giant"/>
-                            </Layout>)
+                <Layout style={{flex:1, borderWidth: 2, borderColor: 'black', alignItems:"center", flexDirection:"row"}}>
+                    <Layout style={{flex:1}}>
+
+                        <Button
+                            accessoryLeft={ChevronLeft}
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',}}
+                            onPress={scrollLeft}
+                        />
+                    </Layout>
+                    <Layout style={{flex:5}}>
+                        {isError ?
+                            (<DisplayError message={error}/>)
                             :
-                            <List
-                                horizontal={true}
-                                data={allInfo.hourly}
-                                renderItem={(item) => renderPrevisionHoraire(item)}
-                            />
-                        )
-                    }
+                            (isLoading ?
+                                    (<Layout style={styles.containerLoading}>
+                                        <Spinner size="giant"/>
+                                    </Layout>)
+                                    :
+                                            <List
+                                                horizontal={true}
+                                                data={allInfo.hourly}
+                                                renderItem={(item) => renderPrevisionMeteo(item)}
+                                                ref={scrollRef}
+                                                onScroll={e=>{
+                                                    setScrollOffset(e.nativeEvent.contentOffset.x);
+                                                }}
+                                            />
+                            )
+                        }
+                    </Layout>
+                    <Layout style={{flex:1}}>
+                        <Button
+                            accessoryLeft={ChevronRight}
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',}}
+                            onPress={scrollRight}
+                        />
+                    </Layout>
                 </Layout>
+
             </Layout>
         </SafeAreaView>
     );
