@@ -9,15 +9,14 @@ import moment from "moment";
 import DisplayError from "./DisplayError";
 
 
-const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}) => {
+const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
     const [allInfo, setAllInfo] = useState({});
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
     const [scrollOffset, setScrollOffset] = useState(0)
     const scrollRef = useRef();
     const screenWidth = Dimensions.get("window").width;
     const [error, setError] = useState("");
-
 
     const displaySaveObject = (id) => {
         if (favMeteoInfos.findIndex(i => i === id) !== -1) {
@@ -47,25 +46,27 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
     }
 
     useEffect(() => {
+        console.log(route);
         (async () => {
             await fetchAllInfo();
+            setIsLoading(false);
         })();
     }, []);
 
     const fetchAllInfo = async() => {
-        setIsLoading(true);
         try {
-            const response = await getWeather({"oneCall": route.params.meteoInfoData.coord});
+            const response = await getWeather({"oneCall": route.params.coord});
             response.data.hourly = response.data.hourly.splice(0, 24);
             response.data.daily = response.data.daily.splice(0, 7);
+            response.data.name = route.params.name;
+            response.data.country = route.params.country;
+            response.data.id = route.params.id;
             await setAllInfo(response.data);
-            //console.log(JSON.stringify(response.data.hourly))
         }
         catch (err) {
             setIsError(true);
             setError(err.message);
         }
-        setIsLoading(false);
     }
 
     const BookmarkIcon = (props) => (
@@ -109,11 +110,8 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
     class PrevisionJournalière extends PureComponent {
         constructor(props) {
             super(props);
-            //console.log(props.item.item);
-            //*
             this.icon = getIcon(this.props.item.item.weather[0].icon);
             this.jour = convertirTimeStampEnJour(this.props.item.item.dt);
-            //*/
         }
 
         render() {
@@ -180,98 +178,122 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
         <Icon {...props} name='chevron-left' pack="feather"/>
     );
 
-
+    //*
     return (
         <SafeAreaView style={{flex: 1}}>
-            <Layout style={{flex: 1, padding: 15}}>
-                <Layout style={{flex: 1, flexDirection: "row", justifyContent:"center", borderWidth: 2, borderColor: 'black'}}>
-                    <Layout style={{flex: 5, flexDirection: "row"}}>
-                        <Layout>
-                            <Flag
-                                code={route.params.meteoInfoData.sys.country}
-                                size={48}
-                            />
-                        </Layout>
-                        <Layout>
-                            <Text category='h1' status="info">
-                                {route.params.meteoInfoData.name}
-                            </Text>
-                        </Layout>
-                    </Layout>
-                    <Layout style={{flex: 1}}>
-                        {displaySaveObject(route.params.meteoInfoData.id)}
-                    </Layout>
-                </Layout>
-                <Layout style={{flex: 1, flexDirection: "row", borderWidth: 2, borderColor: 'black'}}>
-                    {getIcon(route.params.meteoInfoData.weather[0].icon)}
-                    <Text>
-                        {route.params.meteoInfoData.weather[0].description.charAt(0).toUpperCase() + route.params.meteoInfoData.weather[0].description.slice(1)}
-                    </Text>
-                </Layout>
-                <Layout style={{flex:1, borderWidth: 2, borderColor: 'black', alignItems:"center", flexDirection:"row"}}>
-                    <Layout style={{flex:1}}>
-
-                        <Button
-                            accessoryLeft={ChevronLeft}
-                            style={{
-                                justifyContent: 'center',
-                                alignItems: 'center',}}
-                            onPress={scrollLeft}
-                        />
-                    </Layout>
-                    <Layout style={{flex:5}}>
-                        {isError ?
-                            (<DisplayError message={error}/>)
-                            :
-                            (isLoading ?
-                                    (<Layout style={styles.containerLoading}>
-                                        <Spinner size="giant"/>
-                                    </Layout>)
-                                    :
-                                            <List
-                                                horizontal={true}
-                                                data={allInfo.hourly}
-                                                renderItem={(item) => renderPrevisionHoraire(item)}
-                                                ref={scrollRef}
-                                                onScroll={e=>{
-                                                    setScrollOffset(e.nativeEvent.contentOffset.x);
-                                                }}
-                                            />
-                            )
-                        }
-                    </Layout>
-                    <Layout style={{flex:1}}>
-                        <Button
-                            accessoryLeft={ChevronRight}
-                            style={{
-                                justifyContent: 'center',
-                                alignItems: 'center',}}
-                            onPress={scrollRight}
-                        />
-                    </Layout>
-                </Layout>
-
-                <Layout style={{flex:1, borderWidth: 2, borderColor: 'black', alignItems:"center", flexDirection:"row"}}>
-                    <Layout style={{flex:1}}>
-                        {isError ?
-                            (<DisplayError message={error}/>)
-                            :
-                            (isLoading ?
-                                    (<Layout style={styles.containerLoading}>
-                                        <Spinner size="giant"/>
-                                    </Layout>)
-                                    :
-                                    <List
-                                        data={allInfo.daily}
-                                        renderItem={(item) => renderPrevisionJournaliere(item)}
+            {isError ?
+                (<DisplayError message={error}/>)
+                :
+                (isLoading ?
+                    (<Layout style={styles.containerLoading}>
+                        <Spinner size="giant"/>
+                    </Layout>)
+                    :
+                    <Layout style={{flex: 1, padding: 15}}>
+                        <Layout style={{flex: 1, flexDirection: "row", justifyContent:"center", borderWidth: 2, borderColor: 'black'}}>
+                            <Layout style={{flex: 5, flexDirection: "row"}}>
+                                <Layout>
+                                    <Flag
+                                        code={allInfo.country}
+                                        size={48}
                                     />
-                            )
-                        }
+                                </Layout>
+                                <Layout>
+                                    <Text category='h1' status="info">
+                                        {allInfo.name}
+                                    </Text>
+                                </Layout>
+                            </Layout>
+                            <Layout style={{flex: 1}}>
+                                {displaySaveObject(allInfo.id)}
+                            </Layout>
+                        </Layout>
+                        <Layout style={{flex: 1, flexDirection: "row", borderWidth: 2, borderColor: 'black'}}>
+                            <Layout style={{flex:1}}>
+                                {getIcon(allInfo.current.weather[0].icon)}
+                            </Layout>
+                            <Layout style={{flex: 1}}>
+                                <Text>
+                                    {allInfo.current.weather[0].description.charAt(0).toUpperCase() + allInfo.current.weather[0].description.slice(1)}, {allInfo.current.temp}°C
+                                </Text>
+                            </Layout>
+                            <Layout style={{flex: 1}}>
+                                <Layout>
+                                    <Layout>
+                                        <Text>
+                                            {allInfo.daily[0].temp.min}°C
+                                        </Text>
+                                        <Text style={{marginLeft: 20}}>
+                                            {allInfo.daily[0].temp.max}°C
+                                        </Text>
+                                    </Layout>
+                                </Layout>
+
+                                <Layout>
+                                    <Layout>
+                                        <Text>
+                                            {allInfo.current.clouds}%
+                                        </Text>
+                                        <Text style={{marginLeft: 20}}>
+                                            {allInfo.current.wind_speed}km/h
+                                        </Text>
+                                        <Text style={{marginLeft: 20}}>
+                                            {allInfo.current.humidity}%
+                                        </Text>
+                                    </Layout>
+                                </Layout>
+                            </Layout>
+                        </Layout>
+                        <Layout style={{flex:2, borderWidth: 2, borderColor: 'black', alignItems:"center", flexDirection:"row"}}>
+                            <Layout style={{flex:1}}>
+
+                                <Button
+                                    accessoryLeft={ChevronLeft}
+                                    style={{
+                                        justifyContent: 'center',
+                                        alignItems: 'center',}}
+                                    onPress={scrollLeft}
+                                />
+                            </Layout>
+                            <Layout style={{flex:5}}>
+                                <List
+                                    horizontal={true}
+                                    data={allInfo.hourly}
+                                    renderItem={(item) => renderPrevisionHoraire(item)}
+                                    ref={scrollRef}
+                                    onScroll={e=>{
+                                        setScrollOffset(e.nativeEvent.contentOffset.x);
+                                    }}
+                                />
+                            </Layout>
+                            <Layout style={{flex:1}}>
+                                <Button
+                                    accessoryLeft={ChevronRight}
+                                    style={{
+                                        justifyContent: 'center',
+                                        alignItems: 'center',}}
+                                    onPress={scrollRight}
+                                />
+                            </Layout>
+                        </Layout>
+                        <Layout style={{flex:1}}>
+                            <Text>Prévisions 7 jours</Text>
+                        </Layout>
+                        <Layout style={{flex:3, borderWidth: 2, borderColor: 'black', alignItems:"center", flexDirection:"row"}}>
+                            <Layout style={{flex:1}}>
+                                <List
+                                    data={allInfo.daily}
+                                    renderItem={(item) => renderPrevisionJournaliere(item)}
+                                />
+                            </Layout>
+                        </Layout>
                     </Layout>
-                </Layout>
-            </Layout>
+                )
+            }
         </SafeAreaView>
     );
+
+    //*/
 };
 
 /*

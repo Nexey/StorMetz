@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Icon, Layout, List, Spinner, TopNavigation} from '@ui-kitten/components';
 import {StyleSheet, SafeAreaView, TextInput, RefreshControl, Keyboard, Animated} from 'react-native';
-import MeteoInfoListItem from "./MeteoInfoListItem";
 import {connect} from 'react-redux';
 import * as Location from "expo-location";
 import {getWeather} from "../api/OpenWeatherMap";
@@ -131,8 +130,8 @@ const Home = ({navigation, favMeteoInfos}) => {
         await requestWeather(searchData);
     }
 
-    const navigateToMeteoInfoDetails = async(meteoInfoData) => {
-        navigation.navigate("ViewMeteoInfo", {meteoInfoData});
+    const navigateToMeteoInfoDetails = async(coord, name, country, id) => {
+        navigation.navigate("ViewMeteoInfo", {coord, name, country, id});
     };
 
     const onRefresh = async() => {

@@ -34,7 +34,7 @@ export default function App() {
                 <ApplicationProvider
                     {...eva}
                     theme={eva[theme]}
-                    customMapping={mapping}
+                    //customMapping={mapping}
                 >
                     <Provider store={Store} >
                         <PersistGate loading={null} persistor={Persistor}>

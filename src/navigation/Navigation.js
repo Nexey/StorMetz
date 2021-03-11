@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {BottomNavigation, BottomNavigationTab, Icon} from '@ui-kitten/components';
 import Colors from '../definitions/Colors';
 import Home from "../components/Home";
-import {NavigationContainer} from "@react-navigation/native";
+import {getFocusedRouteNameFromRoute, NavigationContainer} from "@react-navigation/native";
 import MeteoInfo from "../components/MeteoInfo";
 import FavMeteoInfos from "../components/FavMeteoInfos";
 import AppLoading from "../components/AppLoading";
@@ -27,7 +27,7 @@ function searchStackScreens() {
             <SearchNavigation.Screen
                 name="ViewMeteoInfo"
                 component={MeteoInfo}
-                options={{ title: 'My Object' }}
+                options={{ title: 'Info Météo' }}
             />
         </SearchNavigation.Navigator>
     )
@@ -46,7 +46,7 @@ function favStackScreens() {
             <FavNavigation.Screen
                 name="ViewMeteoInfo"
                 component={MeteoInfo}
-                options={{ title: 'My Object' }}
+                options={{ title: 'Info Météo' }}
             />
         </FavNavigation.Navigator>
     )
