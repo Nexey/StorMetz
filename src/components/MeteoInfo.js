@@ -1,12 +1,13 @@
 import React, {useEffect, useState, useRef, PureComponent} from 'react';
 import {Button, Icon, Layout, List, Spinner, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
-import {Image, SafeAreaView, StyleSheet, Dimensions, FlatList, Animated} from 'react-native';
+import {SafeAreaView, StyleSheet, Dimensions, FlatList, Animated} from 'react-native';
 import { connect } from 'react-redux';
 import {getWeather} from "../api/OpenWeatherMap";
 import {saveObject, unsaveObject, mapStateToProps} from "../helpers/favActionHelpers";
 import Flag from "react-native-flags";
 import moment from "moment";
 import DisplayError from "./DisplayError";
+import {getIcon} from "../helpers/utilHelpers";
 
 
 const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
@@ -46,7 +47,6 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
     }
 
     useEffect(() => {
-        console.log(route);
         (async () => {
             await fetchAllInfo();
             setIsLoading(false);
@@ -116,7 +116,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
 
         render() {
             return (
-                <Layout style={{alignItems:"center", flexDirection:"row"}}>
+                <Layout style={styles.containerHorizontalCentre}>
                     <Layout style={{flex:2, alignItems:"center", flexDirection:"row"}}>
                         <Text>{this.jour}</Text>
                     </Layout>
@@ -156,15 +156,6 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
         )
     }
 
-    const getIcon = (icon_id) => (
-        <Image
-            style={styles.tinyLogo}
-            source={{
-                uri: `http://openweathermap.org/img/wn/${icon_id}@4x.png`,
-            }}
-        />
-    )
-
     const scrollRight = async() => {
         scrollRef.current?.scrollToOffset({offset:scrollOffset + ~~(screenWidth * 0.2), animated: true });
     }
@@ -180,7 +171,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
 
     //*
     return (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={styles.container}>
             {isError ?
                 (<DisplayError message={error}/>)
                 :
@@ -189,8 +180,12 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                         <Spinner size="giant"/>
                     </Layout>)
                     :
-                    <Layout style={{flex: 1, padding: 15}}>
-                        <Layout style={{flex: 1, flexDirection: "row", justifyContent:"center", borderWidth: 2, borderColor: 'black'}}>
+                    <Layout style={styles.meteoInfoContainer}>
+
+                        {/**
+                         Le cadre avec le drapeau, le titre et le bouton favori
+                         */}
+                        <Layout style={styles.smallMainContainer}>
                             <Layout style={{flex: 5, flexDirection: "row"}}>
                                 <Layout>
                                     <Flag
@@ -208,10 +203,11 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                                 {displaySaveObject(allInfo.id)}
                             </Layout>
                         </Layout>
-                        <Layout style={{flex: 1, flexDirection: "row", borderWidth: 2, borderColor: 'black'}}>
-                            <Layout style={{flex:1}}>
-                                {getIcon(allInfo.current.weather[0].icon)}
-                            </Layout>
+
+                        {/**
+                         Le cadre avec les informations météorologiques
+                         */}
+                        <Layout style={styles.mediumMainContainerColumn}>
                             <Layout style={{flex: 1}}>
                                 <Text>
                                     {allInfo.current.weather[0].description.charAt(0).toUpperCase() + allInfo.current.weather[0].description.slice(1)}, {allInfo.current.temp}°C
@@ -219,12 +215,14 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                             </Layout>
                             <Layout style={{flex: 1}}>
                                 <Layout>
-                                    <Layout>
+                                    <Layout style={{flexDirection:"row"}}>
+                                        <Icon pack="fontawesomefive" style={{width:16, height:16}} name="long-arrow-alt-down"/>
                                         <Text>
-                                            {allInfo.daily[0].temp.min}°C
+                                            {~~allInfo.daily[0].temp.min}°C
                                         </Text>
-                                        <Text style={{marginLeft: 20}}>
-                                            {allInfo.daily[0].temp.max}°C
+                                        <Icon pack="fontawesomefive" style={{marginLeft:15, width:16, height:16}} name="long-arrow-alt-up"/>
+                                        <Text>
+                                            {~~allInfo.daily[0].temp.max}°C
                                         </Text>
                                     </Layout>
                                 </Layout>
@@ -244,8 +242,12 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                                 </Layout>
                             </Layout>
                         </Layout>
-                        <Layout style={{flex:2, borderWidth: 2, borderColor: 'black', alignItems:"center", flexDirection:"row"}}>
-                            <Layout style={{flex:1}}>
+
+                        {/**
+                         Le cadre avec les infos sur 24h
+                         */}
+                        <Layout style={styles.mediumMainContainer}>
+                            <Layout style={styles.container}>
 
                                 <Button
                                     accessoryLeft={ChevronLeft}
@@ -266,7 +268,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                                     }}
                                 />
                             </Layout>
-                            <Layout style={{flex:1}}>
+                            <Layout style={styles.container}>
                                 <Button
                                     accessoryLeft={ChevronRight}
                                     style={{
@@ -276,11 +278,19 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                                 />
                             </Layout>
                         </Layout>
-                        <Layout style={{flex:1}}>
+
+                        {/**
+                         Le cadre avec le titre de la partie météorologique sur 7 jours
+                         */}
+                        <Layout style={styles.container}>
                             <Text>Prévisions 7 jours</Text>
                         </Layout>
-                        <Layout style={{flex:3, borderWidth: 2, borderColor: 'black', alignItems:"center", flexDirection:"row"}}>
-                            <Layout style={{flex:1}}>
+
+                        {/**
+                         Le cadre avec les informations météorologiques sur 7 jours
+                         */}
+                        <Layout style={styles.largeMainContainer}>
+                            <Layout style={styles.container}>
                                 <List
                                     data={allInfo.daily}
                                     renderItem={(item) => renderPrevisionJournaliere(item)}
@@ -296,59 +306,6 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
     //*/
 };
 
-/*
-        <SafeAreaView style={{ flex: 1 }}>
-            <TopNavigation title='MyApp' alignment='center' accessoryLeft={BackAction}/>
-            <Layout style={styles.container}>
-                <Layout style={styles.informationContainer}>
-                    <Layout style={styles.title}>
-                        <Text category='h1'>
-                            {locationData.name}
-                        </Text>
-                    </Layout>
-                    <Layout style={styles.statsContainer}>
-                        <Button
-                            title="Favori"
-                            //onPress={testCall}
-                        >Rajouter aux favoris</Button>
-                    </Layout>
-                    <Layout style={styles.statsContainer}>
-                        <Text>
-                            {locationData.weather[0].main}, {locationData.main.temp}°C
-                        </Text>
-                    </Layout>
-                    <Layout>
-                        <Layout>
-                            <Layout style={styles.statsContainer}>
-                                <Text>
-                                    {locationData.main.temp_min}°C
-                                </Text>
-                                <Text style={{marginLeft: 20}}>
-                                    {locationData.main.temp_max}°C
-                                </Text>
-                            </Layout>
-                        </Layout>
-
-                        <Layout>
-                            <Layout style={styles.statsContainer}>
-                                <Text>
-                                    {locationDataPlus.current.clouds}%
-                                </Text>
-                                <Text style={{marginLeft: 20}}>
-                                    {locationData.wind.speed}km/h
-                                </Text>
-                                <Text style={{marginLeft: 20}}>
-                                    {locationData.main.humidity}%
-                                </Text>
-                            </Layout>
-                        </Layout>
-                    </Layout>
-                </Layout>
-            </Layout>
-        </SafeAreaView>
-
- */
-
 export default connect(mapStateToProps)(MeteoInfo);
 
 const styles = StyleSheet.create({
@@ -357,36 +314,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    containerHorizontalCentre: {
+        alignItems:"center",
+        flexDirection:"row"
+    },
     informationContainer: {
         flex: 1,
         marginLeft: 0,
         justifyContent: 'center',
     },
-    container: {
-        flexDirection: 'row',
-        paddingVertical: 8,
-    },
-    statsContainer: {
-        flexDirection: 'row',
-        marginTop: 12,
-    },
-    statContainer: {
-        flexDirection: 'row',
-        marginRight: 8,
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    data: {
-        fontSize: 16,
-    },
-    cuisine: {
-        fontStyle: 'italic',
-    },
-    stat: {
-        marginLeft: 4,
-    },
+    smallMainContainer: {flex: 1, flexDirection: "row", justifyContent:"center", borderWidth: 4, borderRadius: 8, borderColor: 'rgba(54,78,91,0.5)'},
+    smallMainContainerColumn: {flex: 1, justifyContent:"center", borderWidth: 4, borderRadius: 8, borderColor: 'rgba(54,78,91,0.5)'},
+    mediumMainContainer: {flex: 2, flexDirection: "row", alignItems:"center", justifyContent:"center", borderWidth: 4, borderRadius: 8, borderColor: 'rgba(54,78,91,0.5)'},
+    mediumMainContainerColumn: {flex: 2, justifyContent:"center", borderWidth: 4, borderRadius: 8, borderColor: 'rgba(54,78,91,0.5)'},
+    largeMainContainer: {flex: 3, flexDirection: "row", alignItems:"center", justifyContent:"center", borderWidth: 4, borderRadius: 8, borderColor: 'rgba(54,78,91,0.5)'},
+    meteoInfoContainer: {flex: 1, padding: 15},
+    container: {flex: 1},
     tinyLogo: {
         width: 64,
         height: 64,

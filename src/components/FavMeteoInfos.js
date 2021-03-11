@@ -15,8 +15,8 @@ const FavMeteoInfos = ({ navigation, favMeteoInfos }) => {
     const [error, setError] = useState('');
     const [isError, setIsError] = useState(false);
 
-    const navigateToObjectDetails = async(meteoInfoData) => {
-        navigation.navigate("ViewMeteoInfo", {meteoInfoData});
+    const navigateToObjectDetails = async(coord, name, country, id) => {
+        navigation.navigate("ViewMeteoInfo", {coord, name, country, id});
     };
 
     const amIaFavMeteoINfo = (meteoInfoID) => {
