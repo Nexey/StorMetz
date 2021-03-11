@@ -1,5 +1,15 @@
 import React, {useEffect, useState, useRef, PureComponent} from 'react';
-import {Button, Icon, Layout, List, Spinner, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
+import {
+    Button, Divider,
+    Icon,
+    Layout,
+    List,
+    Spinner,
+    Text,
+    TopNavigation,
+    TopNavigationAction,
+    useTheme
+} from '@ui-kitten/components';
 import {SafeAreaView, StyleSheet, Dimensions, FlatList, Animated} from 'react-native';
 import { connect } from 'react-redux';
 import {getWeather} from "../api/OpenWeatherMap";
@@ -18,6 +28,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
     const scrollRef = useRef();
     const screenWidth = Dimensions.get("window").width;
     const [error, setError] = useState("");
+    const theme = useTheme();
 
     const displaySaveObject = (id) => {
         if (favMeteoInfos.findIndex(i => i === id) !== -1) {
@@ -118,7 +129,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
             return (
                 <Layout style={styles.containerHorizontalCentre}>
                     <Layout style={{flex:2, alignItems:"center", flexDirection:"row"}}>
-                        <Text>{this.jour}</Text>
+                        <Text numberOfLines={1} style={{flex:1}}>{this.jour}</Text>
                     </Layout>
                     <Layout style={{flex:1, alignItems:"center", flexDirection:"row"}}>
                         {this.icon}
@@ -185,67 +196,74 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                         {/**
                          Le cadre avec le drapeau, le titre et le bouton favori
                          */}
-                        <Layout style={styles.smallMainContainer}>
-                            <Layout style={{flex: 5, flexDirection: "row"}}>
-                                <Layout>
-                                    <Flag
-                                        code={allInfo.country}
-                                        size={48}
-                                    />
-                                </Layout>
-                                <Layout>
-                                    <Text category='h1' status="info">
-                                        {allInfo.name}
-                                    </Text>
-                                </Layout>
-                            </Layout>
-                            <Layout style={{flex: 1}}>
-                                {displaySaveObject(allInfo.id)}
-                            </Layout>
-                        </Layout>
-
-                        {/**
-                         Le cadre avec les informations météorologiques
-                         */}
-                        <Layout style={styles.mediumMainContainerColumn}>
-                            <Layout style={{flex: 1}}>
-                                <Text>
-                                    {allInfo.current.weather[0].description.charAt(0).toUpperCase() + allInfo.current.weather[0].description.slice(1)}, {allInfo.current.temp}°C
-                                </Text>
-                            </Layout>
-                            <Layout style={{flex: 1}}>
-                                <Layout>
-                                    <Layout style={{flexDirection:"row"}}>
-                                        <Icon pack="fontawesomefive" style={{width:16, height:16}} name="long-arrow-alt-down"/>
-                                        <Text>
-                                            {~~allInfo.daily[0].temp.min}°C
-                                        </Text>
-                                        <Icon pack="fontawesomefive" style={{marginLeft:15, width:16, height:16}} name="long-arrow-alt-up"/>
-                                        <Text>
-                                            {~~allInfo.daily[0].temp.max}°C
-                                        </Text>
-                                    </Layout>
-                                </Layout>
-
-                                <Layout>
+                         <Layout style={{flex: 3}}>
+                             <Layout style={styles.smallMainContainer}>
+                                <Layout style={{flex: 5, flexDirection: "row"}}>
                                     <Layout>
-                                        <Text>
-                                            {allInfo.current.clouds}%
+                                        <Flag
+                                            code={allInfo.country}
+                                            size={48}
+                                        />
+                                    </Layout>
+                                    <Layout>
+                                        <Text category='h1' status="info">
+                                            {allInfo.name}
                                         </Text>
-                                        <Text style={{marginLeft: 20}}>
-                                            {allInfo.current.wind_speed}km/h
-                                        </Text>
-                                        <Text style={{marginLeft: 20}}>
-                                            {allInfo.current.humidity}%
-                                        </Text>
+                                    </Layout>
+                                </Layout>
+                                <Layout style={{flex: 1}}>
+                                    {displaySaveObject(allInfo.id)}
+                                </Layout>
+                            </Layout>
+
+                            {/**
+                             Le cadre avec les informations météorologiques
+                             */}
+                             <Layout style={styles.mediumMainContainerColumn}>
+                                 <Layout style={{marginLeft:15, flex: 1}}>
+                                    <Text>
+                                        {allInfo.current.weather[0].description.charAt(0).toUpperCase() + allInfo.current.weather[0].description.slice(1)}, {allInfo.current.temp}°C
+                                    </Text>
+                                 </Layout>
+                                 <Layout style={{flex: 1}}>
+                                     <Layout>
+                                         <Layout style={{marginLeft:15, flexDirection:"row"}}>
+                                             <Icon pack="fontawesomefive" style={{width:16, height:16}} name="long-arrow-alt-down"/>
+                                             <Text>
+                                                 {~~allInfo.daily[0].temp.min}°C
+                                             </Text>
+                                             <Icon pack="fontawesomefive" style={{marginLeft:15, width:16, height:16}} name="long-arrow-alt-up"/>
+                                             <Text>
+                                                 {~~allInfo.daily[0].temp.max}°C
+                                             </Text>
+                                         </Layout>
+                                    </Layout>
+
+                                    <Layout>
+                                        <Layout style={{flexDirection:"row", alignItems:"center"}}>
+                                            {getIcon(allInfo.current.weather[0].icon)}
+                                            <Text>
+                                                {allInfo.current.clouds}%
+                                            </Text>
+                                            <Text style={{marginLeft: 20}}>
+                                                {allInfo.current.wind_speed}km/h
+                                            </Text>
+                                            <Text style={{marginLeft: 20}}>
+                                                {allInfo.current.humidity}%
+                                            </Text>
+                                        </Layout>
                                     </Layout>
                                 </Layout>
                             </Layout>
                         </Layout>
 
+                        <Divider/>
                         {/**
                          Le cadre avec les infos sur 24h
                          */}
+                        <Layout style={[styles.container, {justifyContent:"center", alignItems:"center"}]}>
+                            <Text category="h4">Évolution sur 24 heures</Text>
+                        </Layout>
                         <Layout style={styles.mediumMainContainer}>
                             <Layout style={styles.container}>
 
@@ -279,11 +297,12 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route}) => {
                             </Layout>
                         </Layout>
 
+                        <Divider/>
                         {/**
                          Le cadre avec le titre de la partie météorologique sur 7 jours
                          */}
-                        <Layout style={styles.container}>
-                            <Text>Prévisions 7 jours</Text>
+                        <Layout style={[styles.container, {justifyContent:"center", alignItems:"center"}]}>
+                            <Text category="h4">Prévisions 7 jours</Text>
                         </Layout>
 
                         {/**
@@ -323,11 +342,11 @@ const styles = StyleSheet.create({
         marginLeft: 0,
         justifyContent: 'center',
     },
-    smallMainContainer: {flex: 1, flexDirection: "row", justifyContent:"center", borderWidth: 4, borderRadius: 8, borderColor: 'rgba(54,78,91,0.5)'},
-    smallMainContainerColumn: {flex: 1, justifyContent:"center", borderWidth: 4, borderRadius: 8, borderColor: 'rgba(54,78,91,0.5)'},
-    mediumMainContainer: {flex: 2, flexDirection: "row", alignItems:"center", justifyContent:"center", borderWidth: 4, borderRadius: 8, borderColor: 'rgba(54,78,91,0.5)'},
-    mediumMainContainerColumn: {flex: 2, justifyContent:"center", borderWidth: 4, borderRadius: 8, borderColor: 'rgba(54,78,91,0.5)'},
-    largeMainContainer: {flex: 3, flexDirection: "row", alignItems:"center", justifyContent:"center", borderWidth: 4, borderRadius: 8, borderColor: 'rgba(54,78,91,0.5)'},
+    smallMainContainer: {flex: 1, flexDirection: "row", justifyContent:"center"},
+    smallMainContainerColumn: {flex: 1, justifyContent:"center"},
+    mediumMainContainer: {flex: 2, flexDirection: "row", alignItems:"center", justifyContent:"center"},
+    mediumMainContainerColumn: {flex: 2, justifyContent:"center"},
+    largeMainContainer: {flex: 3, flexDirection: "row", alignItems:"center", justifyContent:"center"},
     meteoInfoContainer: {flex: 1, padding: 15},
     container: {flex: 1},
     tinyLogo: {
