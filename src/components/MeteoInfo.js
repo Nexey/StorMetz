@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef, PureComponent} from 'react';
 import {Button, Icon, Layout, List, Spinner, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
-import {Image, SafeAreaView, StyleSheet, Dimensions, FlatList} from 'react-native';
+import {Image, SafeAreaView, StyleSheet, Dimensions, FlatList, Animated} from 'react-native';
 import { connect } from 'react-redux';
 import {getWeather} from "../api/OpenWeatherMap";
 import {saveObject, unsaveObject, mapStateToProps} from "../helpers/favActionHelpers";
@@ -57,6 +57,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
         try {
             const response = await getWeather({"oneCall": route.params.meteoInfoData.coord});
             response.data.hourly = response.data.hourly.splice(0, 24);
+            response.data.daily = response.data.daily.splice(0, 7);
             await setAllInfo(response.data);
             //console.log(JSON.stringify(response.data.hourly))
         }
@@ -82,11 +83,17 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
             .format("HH:mm");
     };
 
-    class PrevisionMeteo extends PureComponent {
+    const convertirTimeStampEnJour = (timestamp) => {
+        return moment
+            .unix(timestamp)
+            .format("dddd");
+    };
+
+    class PrevisionHoraire extends PureComponent {
         constructor(props) {
             super(props);
             this.heure = convertirTimeStampEnHeure(this.props.item.dt, allInfo.timezone_offset);
-            this.icon = getIcon(this.props.item.weather[0].icon);;
+            this.icon = getIcon(this.props.item.weather[0].icon);
         }
 
         render() {
@@ -99,12 +106,57 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
             );
         }
     }
+    class PrevisionJournalière extends PureComponent {
+        constructor(props) {
+            super(props);
+            //console.log(props.item.item);
+            //*
+            this.icon = getIcon(this.props.item.item.weather[0].icon);
+            this.jour = convertirTimeStampEnJour(this.props.item.item.dt);
+            //*/
+        }
 
-    const renderPrevisionMeteo = ({ item }) => {
+        render() {
+            return (
+                <Layout style={{alignItems:"center", flexDirection:"row"}}>
+                    <Layout style={{flex:2, alignItems:"center", flexDirection:"row"}}>
+                        <Text>{this.jour}</Text>
+                    </Layout>
+                    <Layout style={{flex:1, alignItems:"center", flexDirection:"row"}}>
+                        {this.icon}
+                    </Layout>
+                    <Layout style={{flex:1}}/>
+                    <Layout style={{flex:1, alignItems:"center", flexDirection:"row"}}>
+                        <Icon pack="fontawesomefive" style={{width:16, height:16}} name="umbrella"/>
+                        <Text>{~~this.props.item.item.humidity}%</Text>
+                    </Layout>
+                    <Layout style={{flex:1}}/>
+                    <Layout style={{flex:3, alignItems:"center", flexDirection:"row"}}>
+                        <Layout style={{flex:1, alignItems:"center", flexDirection:"row"}}>
+                            <Icon pack="fontawesomefive" style={{width:16, height:16}} name="long-arrow-alt-down"/>
+                            <Text>{~~this.props.item.item.temp.min}°C</Text>
+                        </Layout>
+                        <Layout style={{flex:1, alignItems:"center", flexDirection:"row"}}>
+                            <Icon pack="fontawesomefive" style={{width:16, height:16}} name="long-arrow-alt-up"/>
+                            <Text>{~~this.props.item.item.temp.max}°C</Text>
+                        </Layout>
+                    </Layout>
+                </Layout>
+            );
+        }
+    }
+
+    const renderPrevisionHoraire = ({ item }) => {
         return (
-            <PrevisionMeteo item={item}/>
+            <PrevisionHoraire item={item}/>
         )
     };
+
+    function renderPrevisionJournaliere(item) {
+        return (
+            <PrevisionJournalière item={item}/>
+        )
+    }
 
     const getIcon = (icon_id) => (
         <Image
@@ -127,6 +179,8 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
     const ChevronLeft = (props) => (
         <Icon {...props} name='chevron-left' pack="feather"/>
     );
+
+
     return (
         <SafeAreaView style={{flex: 1}}>
             <Layout style={{flex: 1, padding: 15}}>
@@ -177,7 +231,7 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
                                             <List
                                                 horizontal={true}
                                                 data={allInfo.hourly}
-                                                renderItem={(item) => renderPrevisionMeteo(item)}
+                                                renderItem={(item) => renderPrevisionHoraire(item)}
                                                 ref={scrollRef}
                                                 onScroll={e=>{
                                                     setScrollOffset(e.nativeEvent.contentOffset.x);
@@ -197,6 +251,24 @@ const MeteoInfo = ({navigation, favMeteoInfos, dispatch, route, route: {params}}
                     </Layout>
                 </Layout>
 
+                <Layout style={{flex:1, borderWidth: 2, borderColor: 'black', alignItems:"center", flexDirection:"row"}}>
+                    <Layout style={{flex:1}}>
+                        {isError ?
+                            (<DisplayError message={error}/>)
+                            :
+                            (isLoading ?
+                                    (<Layout style={styles.containerLoading}>
+                                        <Spinner size="giant"/>
+                                    </Layout>)
+                                    :
+                                    <List
+                                        data={allInfo.daily}
+                                        renderItem={(item) => renderPrevisionJournaliere(item)}
+                                    />
+                            )
+                        }
+                    </Layout>
+                </Layout>
             </Layout>
         </SafeAreaView>
     );
